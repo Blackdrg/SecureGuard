@@ -1,0 +1,14 @@
+{
+  "model_type": "dga_detection",
+  "description": "Domain Generation Algorithm detection",
+  "trained_at": "2026-03-16T23:23:42.387965",
+  "features": [
+    "domain_length",
+    "entropy",
+    "consonant_ratio",
+    "digit_ratio",
+    "ngram_score",
+    "alexa_score",
+    "dictionary_words"
+  ]
+}

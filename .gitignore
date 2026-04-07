@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+quarantine/
+logs/*.log
+config/api_keys.json
+*.db
+.vscode/
+.idea/

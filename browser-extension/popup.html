@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureGuard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            width: 320px;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(145deg, #0f172a, #1e293b);
+            color: #f8fafc;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #0ea5e9, #10b981);
+            padding: 16px;
+            text-align: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .logo-icon svg {
+            width: 20px;
+            height: 20px;
+            fill: white;
+        }
+        
+        .logo-text {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        
+        .status-card {
+            padding: 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .status-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .status-icon.protected {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(14, 165, 233, 0.1));
+        }
+        
+        .status-icon.protected svg {
+            fill: #10b981;
+        }
+        
+        .status-info h3 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        
+        .status-info p {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            padding: 12px 16px;
+            background: rgba(0,0,0,0.2);
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #10b981;
+        }
+        
+        .stat-label {
+            font-size: 10px;
+            color: #64748b;
+            text-transform: uppercase;
+        }
+        
+        .settings {
+            padding: 12px 16px;
+        }
+        
+        .setting {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+        }
+        
+        .setting-info h4 {
+            font-size: 13px;
+            font-weight: 500;
+        }
+        
+        .setting-info p {
+            font-size: 11px;
+            color: #64748b;
+        }
+        
+        .toggle {
+            width: 44px;
+            height: 24px;
+            background: #334155;
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .toggle.active {
+            background: linear-gradient(135deg, #0ea5e9, #10b981);
+        }
+        
+        .toggle::after {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background: white;
+            border-radius: 50%;
+            top: 3px;
+            left: 3px;
+            transition: transform 0.2s;
+        }
+        
+        .toggle.active::after {
+            transform: translateX(20px);
+        }
+        
+        .actions {
+            padding: 12px 16px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4);
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 12px;
+            font-size: 11px;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <div class="logo-icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+                </svg>
+            </div>
+            <span class="logo-text">SecureGuard</span>
+        </div>
+    </div>
+    
+    <div class="status-card">
+        <div class="status">
+            <div class="status-icon protected">
+                <svg width="24" height="24" viewBox="0 0 24 24">
+                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                </svg>
+            </div>
+            <div class="status-info">
+                <h3>Protected</h3>
+                <p>Browser protection active</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="stats">
+        <div class="stat">
+            <div class="stat-value" id="blocked-phishing">0</div>
+            <div class="stat-label">Phishing</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value" id="blocked-malware">0</div>
+            <div class="stat-label">Malware</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value" id="safe-browsing">0</div>
+            <div class="stat-label">Safe</div>
+        </div>
+    </div>
+    
+    <div class="settings">
+        <div class="setting">
+            <div class="setting-info">
+                <h4>Phishing Protection</h4>
+                <p>Block phishing websites</p>
+            </div>
+            <div class="toggle active" id="toggle-phishing" onclick="toggleSetting('phishingProtection')"></div>
+        </div>
+        <div class="setting">
+            <div class="setting-info">
+                <h4>Malware Blocking</h4>
+                <p>Block malicious downloads</p>
+            </div>
+            <div class="toggle active" id="toggle-malware" onclick="toggleSetting('malwareBlocking')"></div>
+        </div>
+        <div class="setting">
+            <div class="setting-info">
+                <h4>Safe Browsing</h4>
+                <p>Check URLs in real-time</p>
+            </div>
+            <div class="toggle active" id="toggle-safe" onclick="toggleSetting('safeBrowsing')"></div>
+        </div>
+    </div>
+    
+    <div class="actions">
+        <button class="btn btn-primary" onclick="openDashboard()">Open SecureGuard Dashboard</button>
+    </div>
+    
+    <div class="footer">
+        Version 1.0.0 | SecureGuard Browser Protection
+    </div>
+    
+    <script src="popup.js"></script>
+</body>
+</html>
+

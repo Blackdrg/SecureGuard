@@ -1,0 +1,9 @@
+psutil==5.9.5
+requests==2.31.0
+numpy==1.24.3
+watchdog==3.0.0
+pywin32==306
+cryptography==41.0.7
+yara-python==4.3.1
+flask==3.0.0
+pyjwt==2.8.0

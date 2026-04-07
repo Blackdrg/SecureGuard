@@ -1,0 +1,37 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+c:\Users\mehta\Desktop\SecureGuard\src\AI\ExplainableAiPanel.cs(112,1): error CS8803: Top-level statements must precede namespace and type declarations. [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\AI\ExplainableAiPanel.cs(111,2): error CS1525: Invalid expression term '<' [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\AI\ExplainableAiPanel.cs(112,2): error CS1525: Invalid expression term '/' [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\AI\ExplainableAiPanel.cs(112,13): error CS1525: Invalid expression term '<' [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\AI\ExplainableAiPanel.cs(113,2): error CS1525: Invalid expression term '/' [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\AI\ExplainableAiPanel.cs(113,15): error CS1733: Expected expression [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\AI\ExplainableAiPanel.cs(113,15): error CS1002: ; expected [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\AI\SecurityDashboard.cs(112,1): error CS8803: Top-level statements must precede namespace and type declarations. [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\AI\SecurityDashboard.cs(111,2): error CS1525: Invalid expression term '<' [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\AI\SecurityDashboard.cs(112,2): error CS1525: Invalid expression term '/' [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\AI\SecurityDashboard.cs(112,13): error CS1525: Invalid expression term '<' [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\AI\SecurityDashboard.cs(113,2): error CS1525: Invalid expression term '/' [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\AI\SecurityDashboard.cs(113,15): error CS1733: Expected expression [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\AI\SecurityDashboard.cs(113,15): error CS1002: ; expected [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+
+Build FAILED.
+
+c:\Users\mehta\Desktop\SecureGuard\src\AI\ExplainableAiPanel.cs(112,1): error CS8803: Top-level statements must precede namespace and type declarations. [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\AI\ExplainableAiPanel.cs(111,2): error CS1525: Invalid expression term '<' [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\AI\ExplainableAiPanel.cs(112,2): error CS1525: Invalid expression term '/' [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\AI\ExplainableAiPanel.cs(112,13): error CS1525: Invalid expression term '<' [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\AI\ExplainableAiPanel.cs(113,2): error CS1525: Invalid expression term '/' [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\AI\ExplainableAiPanel.cs(113,15): error CS1733: Expected expression [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\AI\ExplainableAiPanel.cs(113,15): error CS1002: ; expected [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\AI\SecurityDashboard.cs(112,1): error CS8803: Top-level statements must precede namespace and type declarations. [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\AI\SecurityDashboard.cs(111,2): error CS1525: Invalid expression term '<' [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\AI\SecurityDashboard.cs(112,2): error CS1525: Invalid expression term '/' [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\AI\SecurityDashboard.cs(112,13): error CS1525: Invalid expression term '<' [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\AI\SecurityDashboard.cs(113,2): error CS1525: Invalid expression term '/' [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\AI\SecurityDashboard.cs(113,15): error CS1733: Expected expression [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\AI\SecurityDashboard.cs(113,15): error CS1002: ; expected [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+    0 Warning(s)
+    14 Error(s)
+
+Time Elapsed 00:00:03.27

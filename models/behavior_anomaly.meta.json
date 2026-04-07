@@ -1,0 +1,15 @@
+{
+  "model_type": "behavior_anomaly",
+  "description": "Dynamic behavior analysis for process monitoring",
+  "trained_at": "2026-03-16T23:23:42.375176",
+  "features": [
+    "process_count",
+    "network_connections",
+    "registry_modifications",
+    "file_operations",
+    "cpu_usage",
+    "memory_usage",
+    "api_call_frequency",
+    "suspicious_api_patterns"
+  ]
+}

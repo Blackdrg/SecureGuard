@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "paths": [
+    "C:\\Program Files\\Microsoft Visual Studio",
+    "C:\\Program Files (x86)\\Microsoft Visual Studio",
+    "C:\\Program Files\\Microsoft Office",
+    "C:\\Program Files (x86)\\Microsoft Office",
+    "C:\\Users\\*\\AppData\\Local\\Google\\Chrome",
+    "C:\\Program Files\\Google\\Chrome",
+    "C:\\Program Files\\nodejs",
+    "C:\\Users\\*\\.vscode",
+    "C:\\Windows\\System32\\WindowsPowerShell\\v1.0",
+    "%LOCALAPPDATA%\\Programs\\Microsoft VS Code"
+  ],
+  "hashes": [],
+  "regex": [
+    ".*\\\\temp\\\\.*",
+    ".*\\\\cache\\\\.*",
+    "^[A-Z]:\\\\Windows\\\\(Temp|Logs|CrashDumps).*"
+  ]
+}
+

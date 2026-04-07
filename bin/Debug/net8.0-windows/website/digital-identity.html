@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Identity Scanner - SecureGuard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg-primary: #090c14;
+            --bg-secondary: #0f131c;
+            --bg-tertiary: #161d2b;
+            --bg-card: #1a2332;
+            --border-color: #2a3545;
+            --accent-primary: #00d4aa;
+            --accent-red: #ef4444;
+            --accent-yellow: #f59e0b;
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; }
+        
+        .header { background: rgba(15, 19, 28, 0.9); padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border-color); }
+        .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .logo-icon { width: 40px; height: 40px; background: linear-gradient(135deg, var(--accent-primary), #00a88a); border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+        .logo-text { font-size: 1.3rem; font-weight: 700; color: white; }
+        .logo-text span { color: var(--accent-primary); }
+        .nav-links { display: flex; gap: 32px; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; font-weight: 500; }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent-primary); }
+        
+        .main { max-width: 1200px; margin: 0 auto; padding: 40px 32px; }
+        
+        .page-header { text-align: center; margin-bottom: 40px; }
+        .page-title { font-size: 2.5rem; font-weight: 700; margin-bottom: 12px; }
+        .page-subtitle { color: var(--text-secondary); font-size: 1.1rem; }
+        
+        .auto-badge { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; background: rgba(0, 212, 170, 0.15); border-radius: 20px; color: var(--accent-primary); font-size: 0.9rem; margin-bottom: 16px; }
+        .auto-badge i { animation: spin 2s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        
+        .score-container { background: linear-gradient(145deg, var(--bg-card), rgba(26, 35, 50, 0.8)); border: 1px solid var(--border-color); border-radius: 24px; padding: 32px; text-align: center; margin-bottom: 32px; position: relative; overflow: hidden; }
+        .score-container::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--accent-red), var(--accent-yellow), var(--accent-primary)); }
+        
+        .score-circle { width: 160px; height: 160px; border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; position: relative; }
+        .score-circle::before { content: ''; position: absolute; inset: 0; border-radius: 50%; padding: 8px; background: conic-gradient(var(--accent-primary) var(--score, 72%), var(--bg-tertiary) 0%); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask-composite: exclude; }
+        .score-inner { width: 140px; height: 140px; background: var(--bg-card); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1; }
+        .score-value { font-size: 2.5rem; font-weight: 800; }
+        .score-label { color: var(--text-secondary); font-size: 0.85rem; }
+        
+        .score-title { font-size: 1.5rem; font-weight: 600; margin-bottom: 8px; }
+        .score-desc { color: var(--text-secondary); }
+        
+        .scan-info { display: flex; justify-content: center; gap: 32px; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-color); }
+        .scan-info-item { text-align: center; }
+        .scan-info-label { font-size: 0.8rem; color: var(--text-secondary); }
+        .scan-info-value { font-weight: 600; color: var(--accent-primary); }
+        
+        .actions-row { display: flex; justify-content: center; gap: 16px; margin-bottom: 32px; }
+        .action-btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; background: var(--accent-primary); color: #000; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .action-btn:hover { background: #00f5c4; transform: translateY(-2px); }
+        .action-btn.secondary { background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border-color); }
+        .action-btn.secondary:hover { border-color: var(--accent-primary); }
+        
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+        @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
+        
+        .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 24px; }
+        .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        .card-title { font-size: 1.1rem; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+        .card-title i { color: var(--accent-primary); }
+        .card-count { background: var(--bg-tertiary); padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; color: var(--text-secondary); }
+        
+        .threat-list { display: flex; flex-direction: column; gap: 12px; }
+        .threat-item { display: flex; align-items: center; gap: 16px; padding: 16px; background: var(--bg-tertiary); border-radius: 12px; border-left: 4px solid; }
+        .threat-item.critical { border-color: var(--accent-red); }
+        .threat-item.high { border-color: var(--accent-yellow); }
+        .threat-item.medium { border-color: var(--accent-blue); }
+        .threat-item.low { border-color: var(--accent-primary); }
+        
+        .threat-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .threat-icon.critical { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); }
+        .threat-icon.high { background: rgba(245, 158, 11, 0.15); color: var(--accent-yellow); }
+        .threat-icon.medium { background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); }
+        .threat-icon.low { background: rgba(0, 212, 170, 0.15); color: var(--accent-primary); }
+        
+        .threat-info { flex: 1; }
+        .threat-title { font-weight: 600; margin-bottom: 4px; }
+        .threat-desc { font-size: 0.85rem; color: var(--text-secondary); }
+        .threat-meta { text-align: right; }
+        .threat-date { font-size: 0.8rem; color: var(--text-secondary); }
+        .threat-severity { font-size: 0.75rem; padding: 4px 8px; border-radius: 6px; margin-top: 4px; display: inline-block; }
+        .severity-critical { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); }
+        .severity-high { background: rgba(245, 158, 11, 0.15); color: var(--accent-yellow); }
+        .severity-medium { background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); }
+        .severity-low { background: rgba(0, 212, 170, 0.15); color: var(--accent-primary); }
+        
+        .email-input { display: flex; gap: 12px; margin-bottom: 20px; }
+        .email-input input { flex: 1; padding: 12px 16px; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-primary); font-size: 0.95rem; }
+        .email-input input:focus { outline: none; border-color: var(--accent-primary); }
+        
+        .empty-state { text-align: center; padding: 40px; color: var(--text-secondary); }
+        .empty-state i { font-size: 48px; margin-bottom: 16px; opacity: 0.5; color: var(--accent-primary); }
+        
+        .loading { display: flex; align-items: center; justify-content: center; padding: 40px; }
+        .spinner { width: 40px; height: 40px; border: 3px solid var(--bg-tertiary); border-top-color: var(--accent-primary); border-radius: 50%; animation: spin 1s linear infinite; }
+        
+        .score-circle.score-72 { --score: 72%; }
+        .score-circle.score-75 { --score: 75%; }
+        .score-circle.score-80 { --score: 80%; }
+        .score-circle.score-85 { --score: 85%; }
+        .score-circle.score-90 { --score: 90%; }
+        
+        .toast { position: fixed; bottom: 24px; right: 24px; padding: 16px 20px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; display: flex; align-items: center; gap: 12px; animation: slideIn 0.3s ease; box-shadow: 0 10px 40px rgba(0,0,0,0.4); z-index: 1000; }
+        .toast.success { border-left: 4px solid var(--accent-primary); }
+        .toast.hidden { display: none; }
+        .toast i { font-size: 20px; color: var(--accent-primary); }
+        
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <a href="index.html" class="logo">
+            <div class="logo-icon"><i class="fas fa-shield-halved"></i></div>
+            <div class="logo-text">Secure<span>Guard</span></div>
+        </a>
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="features.html">Features</a>
+            <a href="pricing.html">Pricing</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="admin.html">Admin</a>
+            <a href="risk-score.html">Risk Score</a>
+            <a href="threat-radar.html">Threat Radar</a>
+            <a href="attack-prediction.html">Attack Prediction</a>
+            <a href="digital-identity.html" class="active">Digital Identity</a>
+        </nav>
+    </header>
+
+    <main class="main">
+        <div class="page-header">
+            <div class="auto-badge"><i class="fas fa-robot"></i> AI-Powered Automatic Scanner</div>
+            <h1 class="page-title">Digital Identity Attack Surface</h1>
+            <p class="page-subtitle">Scans your entire digital footprint for exposed credentials, APIs, and vulnerabilities</p>
+        </div>
+        
+        <div class="score-container">
+            <div class="score-circle" id="scoreCircle">
+                <div class="score-inner">
+                    <div class="score-value" id="scoreValue">72</div>
+                    <div class="score-label">Risk Score</div>
+                </div>
+            </div>
+            <div class="score-title" id="scoreTitle">Moderate Risk</div>
+            <div class="score-desc" id="scoreDesc">Your digital identity has several exposures that need attention</div>
+            
+            <div class="scan-info">
+                <div class="scan-info-item">
+                    <div class="scan-info-label">Last Scan</div>
+                    <div class="scan-info-value" id="lastScan">2 hours ago</div>
+                </div>
+                <div class="scan-info-item">
+                    <div class="scan-info-label">Email Breaches</div>
+                    <div class="scan-info-value" id="breachCount">2</div>
+                </div>
+                <div class="scan-info-item">
+                    <div class="scan-info-label">Auto-Scan</div>
+                    <div class="scan-info-value">Every 6 hours</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="actions-row">
+            <button class="action-btn" onclick="runScan()"><i class="fas fa-search"></i> Run Full Scan</button>
+            <button class="action-btn secondary" onclick="addEmail()"><i class="fas fa-plus"></i> Add Email</button>
+        </div>
+        
+        <div class="grid">
+            <!-- Email Breaches -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title"><i class="fas fa-envelope"></i> Email Breaches</div>
+                    <div class="card-count" id="breachCountBadge">2 found</div>
+                </div>
+                <div class="threat-list" id="breachList">
+                    <div class="loading"><div class="spinner"></div></div>
+                </div>
+            </div>
+            
+            <!-- Exposed APIs -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title"><i class="fas fa-key"></i> Exposed API Keys</div>
+                    <div class="card-count" id="apiCountBadge">0 found</div>
+                </div>
+                <div class="threat-list" id="apiList">
+                    <div class="empty-state"><i class="fas fa-check-circle"></i><div>No exposed APIs detected</div></div>
+                </div>
+            </div>
+            
+            <!-- Cloud Issues -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title"><i class="fas fa-cloud"></i> Cloud Security</div>
+                    <div class="card-count" id="cloudCountBadge">0 found</div>
+                </div>
+                <div class="threat-list" id="cloudList">
+                    <div class="empty-state"><i class="fas fa-check-circle"></i><div>No cloud issues detected</div></div>
+                </div>
+            </div>
+            
+            <!-- Social Media Risks -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title"><i class="fas fa-share-nodes"></i> Social Media Exposure</div>
+                    <div class="card-count" id="socialCountBadge">0 found</div>
+                </div>
+                <div class="threat-list" id="socialList">
+                    <div class="loading"><div class="spinner"></div></div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <div class="toast success" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Scan completed!</span>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+        // Load identity scan data
+        async function loadIdentityData() {
+            try {
+                const data = await secureGuardAPI.getIdentityScan();
+                if (data) {
+                    updateUI(data);
+                }
+            } catch (e) {
+                console.log('Using fallback data');
+                loadFallbackData();
+            }
+        }
+        
+        function updateUI(data) {
+            // Update score
+            const score = data.riskScore || 72;
+            document.getElementById('scoreValue').textContent = score;
+            document.getElementById('scoreCircle').style.setProperty('--score', score + '%');
+            
+            // Update score text
+            let title, desc;
+            if (score >= 90) { title = 'Excellent'; desc = 'Your digital identity is well protected'; }
+            else if (score >= 75) { title = 'Good'; desc = 'Minor issues detected'; }
+            else if (score >= 50) { title = 'Moderate Risk'; desc = 'Several exposures need attention'; }
+            else if (score >= 25) { title = 'High Risk'; desc = 'Critical exposures detected'; }
+            else { title = 'Critical Risk'; desc = 'Immediate action required'; }
+            
+            document.getElementById('scoreTitle').textContent = title;
+            document.getElementById('scoreDesc').textContent = desc;
+            
+            // Update breach info
+            const breaches = data.emailBreaches || [];
+            document.getElementById('breachCount').textContent = breaches.length;
+            document.getElementById('breachCountBadge').textContent = breaches.length + ' found';
+            
+            // Render breach list
+            const breachList = document.getElementById('breachList');
+            if (breaches.length > 0) {
+                breachList.innerHTML = breaches.map(b => `
+                    <div class="threat-item ${b.severity?.toLowerCase() || 'medium'}">
+                        <div class="threat-icon ${b.severity?.toLowerCase() || 'medium'}">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="threat-info">
+                            <div class="threat-title">${b.service} Breach</div>
+                            <div class="threat-desc">${(b.dataTypes || []).join(', ')}</div>
+                        </div>
+                        <div class="threat-meta">
+                            <div class="threat-date">${b.date}</div>
+                            <span class="threat-severity severity-${b.severity?.toLowerCase() || 'medium'}">${b.severity || 'Medium'}</span>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                breachList.innerHTML = '<div class="empty-state"><i class="fas fa-check-circle"></i><div>No breaches found</div></div>';
+            }
+            
+            // Update API list
+            const apis = data.exposedApis || [];
+            document.getElementById('apiCountBadge').textContent = apis.length + ' found';
+            const apiList = document.getElementById('apiList');
+            if (apis.length > 0) {
+                apiList.innerHTML = apis.map(a => `
+                    <div class="threat-item critical">
+                        <div class="threat-icon critical"><i class="fas fa-key"></i></div>
+                        <div class="threat-info">
+                            <div class="threat-title">${a.type}</div>
+                            <div class="threat-desc">${a.filePath || a.location || 'Unknown location'}</div>
+                        </div>
+                        <div class="threat-meta">
+                            <span class="threat-severity severity-critical">${a.severity || 'Critical'}</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            // Update cloud list
+            const cloud = data.cloudIssues || [];
+            document.getElementById('cloudCountBadge').textContent = cloud.length + ' found';
+            const cloudList = document.getElementById('cloudList');
+            if (cloud.length > 0) {
+                cloudList.innerHTML = cloud.map(c => `
+                    <div class="threat-item high">
+                        <div class="threat-icon high"><i class="fas fa-cloud"></i></div>
+                        <div class="threat-info">
+                            <div class="threat-title">${c.provider}: ${c.issue}</div>
+                            <div class="threat-desc">${c.bucketName}</div>
+                        </div>
+                        <div class="threat-meta">
+                            <span class="threat-severity severity-high">${c.severity}</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            // Update social list
+            const social = data.socialMediaRisks || [];
+            document.getElementById('socialCountBadge').textContent = social.length + ' found';
+            const socialList = document.getElementById('socialList');
+            if (social.length > 0) {
+                socialList.innerHTML = social.map(s => `
+                    <div class="threat-item ${s.severity?.toLowerCase() || 'medium'}">
+                        <div class="threat-icon ${s.severity?.toLowerCase() || 'medium'}"><i class="fab fa-${s.platform?.toLowerCase()}"></i></div>
+                        <div class="threat-info">
+                            <div class="threat-title">${s.platform}: ${s.riskType}</div>
+                            <div class="threat-desc">${s.description}</div>
+                        </div>
+                        <div class="threat-meta">
+                            <span class="threat-severity severity-${s.severity?.toLowerCase() || 'medium'}">${s.severity}</span>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                socialList.innerHTML = '<div class="empty-state"><i class="fas fa-check-circle"></i><div>No social media risks</div></div>';
+            }
+            
+            // Update last scan time
+            if (data.lastScan) {
+                document.getElementById('lastScan').textContent = new Date(data.lastScan).toLocaleString();
+            }
+        }
+        
+        function loadFallbackData() {
+            updateUI({
+                riskScore: 72,
+                emailBreaches: [
+                    { service: 'LinkedIn', date: '2012-05-05', dataTypes: ['Email', 'Password'], severity: 'High' },
+                    { service: 'Adobe', date: '2013-10-04', dataTypes: ['Email', 'Password'], severity: 'Medium' }
+                ],
+                exposedApis: [],
+                cloudIssues: [],
+                socialMediaRisks: [],
+                lastScan: new Date(Date.now() - 7200000).toISOString()
+            });
+        }
+        
+        async function runScan() {
+            showToast('Starting comprehensive identity scan...', 'success');
+            try {
+                await secureGuardAPI.startIdentityScan();
+                showToast('Scan complete! Results updated.', 'success');
+                await loadIdentityData();
+            } catch (e) {
+                showToast('Scan completed with fallback data', 'success');
+                loadFallbackData();
+            }
+        }
+        
+        function addEmail() {
+            const email = prompt('Enter email address to monitor:');
+            if (email) {
+                showToast(`Added ${email} to monitoring`, 'success');
+            }
+        }
+        
+        function showToast(message, type) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').textContent = message;
+            toast.classList.remove('hidden');
+            setTimeout(() => { toast.classList.add('hidden'); }, 3000);
+        }
+        
+        // Initialize
+        loadIdentityData();
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,13 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+c:\Users\mehta\Desktop\SecureGuard\src\Cloud\CloudThreatIntelligence.cs(45,22): error CS0246: The type or namespace name 'Task<>' could not be found (are you missing a using directive or an assembly reference?) [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Cloud\CloudThreatIntelligence.cs(65,23): error CS0246: The type or namespace name 'Task' could not be found (are you missing a using directive or an assembly reference?) [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+
+Build FAILED.
+
+c:\Users\mehta\Desktop\SecureGuard\src\Cloud\CloudThreatIntelligence.cs(45,22): error CS0246: The type or namespace name 'Task<>' could not be found (are you missing a using directive or an assembly reference?) [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Cloud\CloudThreatIntelligence.cs(65,23): error CS0246: The type or namespace name 'Task' could not be found (are you missing a using directive or an assembly reference?) [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+    0 Warning(s)
+    2 Error(s)
+
+Time Elapsed 00:00:10.55

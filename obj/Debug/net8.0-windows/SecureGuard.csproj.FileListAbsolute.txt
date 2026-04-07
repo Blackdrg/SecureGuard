@@ -1,0 +1,12 @@
+c:\Users\mehta\Desktop\SecureGuard\obj\Debug\net8.0-windows\SecureGuard.csproj.AssemblyReference.cache
+c:\Users\mehta\Desktop\SecureGuard\obj\Debug\net8.0-windows\src\UI\App.baml
+c:\Users\mehta\Desktop\SecureGuard\obj\Debug\net8.0-windows\src\UI\MainWindow.baml
+c:\Users\mehta\Desktop\SecureGuard\obj\Debug\net8.0-windows\src\UI\App.g.cs
+c:\Users\mehta\Desktop\SecureGuard\obj\Debug\net8.0-windows\src\UI\MainWindow.g.cs
+c:\Users\mehta\Desktop\SecureGuard\obj\Debug\net8.0-windows\SecureGuard_MarkupCompile.cache
+c:\Users\mehta\Desktop\SecureGuard\obj\Debug\net8.0-windows\SecureGuard.g.resources
+c:\Users\mehta\Desktop\SecureGuard\obj\Debug\net8.0-windows\SecureGuard.GeneratedMSBuildEditorConfig.editorconfig
+c:\Users\mehta\Desktop\SecureGuard\obj\Debug\net8.0-windows\SecureGuard.AssemblyInfoInputs.cache
+c:\Users\mehta\Desktop\SecureGuard\obj\Debug\net8.0-windows\SecureGuard.AssemblyInfo.cs
+c:\Users\mehta\Desktop\SecureGuard\obj\Debug\net8.0-windows\SecureGuard.csproj.CoreCompileInputs.cache
+c:\Users\mehta\Desktop\SecureGuard\obj\Debug\net8.0-windows\SecureGuard.sourcelink.json

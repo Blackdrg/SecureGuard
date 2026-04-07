@@ -1,0 +1,47 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+c:\Users\mehta\Desktop\SecureGuard\src\Privacy\PrivacyFeatures.cs(78,13): error CS0103: The name 'Logger' does not exist in the current context [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Privacy\PrivacyFeatures.cs(12,13): error CS0103: The name 'Logger' does not exist in the current context [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Sandbox\SandboxEngine.cs(16,13): error CS0103: The name 'Logger' does not exist in the current context [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Privacy\PrivacyFeatures.cs(35,13): error CS0103: The name 'Logger' does not exist in the current context [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Privacy\PrivacyFeatures.cs(18,13): error CS0103: The name 'Logger' does not exist in the current context [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Sandbox\SandboxEngine.cs(22,13): error CS0103: The name 'Logger' does not exist in the current context [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Privacy\PrivacyFeatures.cs(41,13): error CS0103: The name 'Logger' does not exist in the current context [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Privacy\PrivacyFeatures.cs(83,13): error CS0103: The name 'Logger' does not exist in the current context [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Privacy\PrivacyFeatures.cs(58,13): error CS0103: The name 'Logger' does not exist in the current context [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Privacy\PrivacyFeatures.cs(64,13): error CS0103: The name 'Logger' does not exist in the current context [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Privacy\PrivacyFeatures.cs(24,17): error CS0103: The name 'Logger' does not exist in the current context [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Privacy\PrivacyFeatures.cs(70,17): error CS0103: The name 'Logger' does not exist in the current context [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Privacy\PrivacyFeatures.cs(47,17): error CS0103: The name 'Logger' does not exist in the current context [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\UI\MainWindow.xaml.cs(96,36): error CS1061: 'ThreatDetectedEventArgs' does not contain a definition for 'ThreatName' and no accessible extension method 'ThreatName' accepting a first argument of type 'ThreatDetectedEventArgs' could be found (are you missing a using directive or an assembly reference?) [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\UI\MainWindow.xaml.cs(617,22): warning CS0219: The variable 'processedSize' is assigned but its value is never used [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Core\ProcessTreeAnalyzer.cs(18,66): warning CS0067: The event 'ProcessTreeAnalyzer.PrivilegeEscalationDetected' is never used [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Core\ProcessTreeAnalyzer.cs(19,60): warning CS0067: The event 'ProcessTreeAnalyzer.CodeInjectionDetected' is never used [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Sandbox\SandboxEngine.cs(9,22): warning CS0414: The field 'SandboxEngine._isRunning' is assigned but its value is never used [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Core\SelfDefenseSystem.cs(12,22): warning CS0414: The field 'SelfDefenseSystem._isEnabled' is assigned but its value is never used [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+
+Build FAILED.
+
+c:\Users\mehta\Desktop\SecureGuard\src\UI\MainWindow.xaml.cs(617,22): warning CS0219: The variable 'processedSize' is assigned but its value is never used [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Core\ProcessTreeAnalyzer.cs(18,66): warning CS0067: The event 'ProcessTreeAnalyzer.PrivilegeEscalationDetected' is never used [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Core\ProcessTreeAnalyzer.cs(19,60): warning CS0067: The event 'ProcessTreeAnalyzer.CodeInjectionDetected' is never used [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Sandbox\SandboxEngine.cs(9,22): warning CS0414: The field 'SandboxEngine._isRunning' is assigned but its value is never used [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Core\SelfDefenseSystem.cs(12,22): warning CS0414: The field 'SelfDefenseSystem._isEnabled' is assigned but its value is never used [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Privacy\PrivacyFeatures.cs(78,13): error CS0103: The name 'Logger' does not exist in the current context [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Privacy\PrivacyFeatures.cs(12,13): error CS0103: The name 'Logger' does not exist in the current context [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Sandbox\SandboxEngine.cs(16,13): error CS0103: The name 'Logger' does not exist in the current context [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Privacy\PrivacyFeatures.cs(35,13): error CS0103: The name 'Logger' does not exist in the current context [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Privacy\PrivacyFeatures.cs(18,13): error CS0103: The name 'Logger' does not exist in the current context [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Sandbox\SandboxEngine.cs(22,13): error CS0103: The name 'Logger' does not exist in the current context [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Privacy\PrivacyFeatures.cs(41,13): error CS0103: The name 'Logger' does not exist in the current context [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Privacy\PrivacyFeatures.cs(83,13): error CS0103: The name 'Logger' does not exist in the current context [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Privacy\PrivacyFeatures.cs(58,13): error CS0103: The name 'Logger' does not exist in the current context [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Privacy\PrivacyFeatures.cs(64,13): error CS0103: The name 'Logger' does not exist in the current context [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Privacy\PrivacyFeatures.cs(24,17): error CS0103: The name 'Logger' does not exist in the current context [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Privacy\PrivacyFeatures.cs(70,17): error CS0103: The name 'Logger' does not exist in the current context [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Privacy\PrivacyFeatures.cs(47,17): error CS0103: The name 'Logger' does not exist in the current context [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\UI\MainWindow.xaml.cs(96,36): error CS1061: 'ThreatDetectedEventArgs' does not contain a definition for 'ThreatName' and no accessible extension method 'ThreatName' accepting a first argument of type 'ThreatDetectedEventArgs' could be found (are you missing a using directive or an assembly reference?) [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+    5 Warning(s)
+    14 Error(s)
+
+Time Elapsed 00:00:10.66

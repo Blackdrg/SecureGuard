@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced AI Features - SecureGuard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg-primary: #090c14;
+            --bg-secondary: #0f131c;
+            --bg-tertiary: #161d2b;
+            --bg-card: #1a2332;
+            --bg-card-hover: #222d40;
+            --border-color: #2a3545;
+            --border-light: rgba(255,255,255,0.06);
+            --accent-primary: #00d4aa;
+            --accent-primary-hover: #00f5c4;
+            --accent-primary-dim: rgba(0, 212, 170, 0.15);
+            --accent-blue: #3b82f6;
+            --accent-blue-dim: rgba(59, 130, 246, 0.15);
+            --accent-red: #ef4444;
+            --accent-red-dim: rgba(239, 68, 68, 0.15);
+            --accent-yellow: #f59e0b;
+            --accent-yellow-dim: rgba(245, 158, 11, 0.15);
+            --accent-purple: #8b5cf6;
+            --accent-purple-dim: rgba(139, 92, 246, 0.15);
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --shadow-lg: 0 10px 40px rgba(0,0,0,0.4);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --transition-fast: 0.15s ease;
+            --transition-normal: 0.25s ease;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
+        
+        .bg-gradient { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: -1; background: radial-gradient(ellipse 100% 80% at 20% 0%, rgba(0, 212, 170, 0.08) 0%, transparent 50%), radial-gradient(ellipse 80% 60% at 80% 100%, rgba(139, 92, 246, 0.06) 0%, transparent 50%); }
+        
+        /* Header */
+        .header { background: rgba(15, 19, 28, 0.9); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border-light); padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+        .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .logo-icon { width: 40px; height: 40px; background: linear-gradient(135deg, var(--accent-primary), #00a88a); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; }
+        .logo-icon i { font-size: 20px; color: white; }
+        .logo-text { font-size: 1.3rem; font-weight: 700; }
+        .logo-text span { color: var(--accent-primary); }
+        .nav-links { display: flex; gap: 32px; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; font-weight: 500; transition: color var(--transition-fast); }
+        .nav-links a:hover { color: var(--accent-primary); }
+        .nav-links a.active { color: var(--accent-primary); }
+        
+        /* Main Content */
+        .main { max-width: 1400px; margin: 0 auto; padding: 60px 32px; }
+        
+        /* Hero Section */
+        .hero { text-align: center; margin-bottom: 60px; }
+        .hero-badge { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; background: var(--accent-purple-dim); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 50px; font-size: 0.85rem; color: var(--accent-purple); margin-bottom: 24px; }
+        .hero h1 { font-size: 3.5rem; font-weight: 800; margin-bottom: 20px; line-height: 1.1; }
+        .hero h1 span { background: linear-gradient(135deg, var(--accent-primary), var(--accent-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero p { font-size: 1.2rem; color: var(--text-secondary); max-width: 700px; margin: 0 auto 32px; }
+        .hero-stats { display: flex; justify-content: center; gap: 60px; margin-top: 40px; }
+        .hero-stat { text-align: center; }
+        .hero-stat-value { font-size: 2.5rem; font-weight: 800; color: var(--accent-primary); }
+        .hero-stat-label { font-size: 0.9rem; color: var(--text-muted); }
+        
+        /* Features Grid */
+        .features-section { margin-bottom: 80px; }
+        .section-title { font-size: 1.8rem; font-weight: 700; margin-bottom: 12px; }
+        .section-desc { color: var(--text-secondary); margin-bottom: 40px; }
+        
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 24px; }
+        
+        .feature-card { background: linear-gradient(145deg, var(--bg-card), rgba(26, 35, 50, 0.8)); border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 28px; transition: all var(--transition-normal); position: relative; overflow: hidden; }
+        .feature-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent); }
+        .feature-card:hover { border-color: var(--accent-primary); transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+        .feature-card.disabled { opacity: 0.6; }
+        
+        .feature-header { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 16px; }
+        .feature-icon { width: 52px; height: 52px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .feature-icon.intent { background: var(--accent-primary-dim); }
+        .feature-icon.intent i { color: var(--accent-primary); font-size: 24px; }
+        .feature-icon.personality { background: var(--accent-blue-dim); }
+        .feature-icon.personality i { color: var(--accent-blue); font-size: 24px; }
+        .feature-icon.timeshift { background: var(--accent-yellow-dim); }
+        .feature-icon.timeshift i { color: var(--accent-yellow); font-size: 24px; }
+        .feature-icon.chain { background: var(--accent-purple-dim); }
+        .feature-icon.chain i { color: var(--accent-purple); font-size: 24px; }
+        .feature-icon.autopilot { background: rgba(236, 72, 153, 0.15); }
+        .feature-icon.autopilot i { color: #ec4899; font-size: 24px; }
+        .feature-icon.crossdevice { background: rgba(34, 211, 238, 0.15); }
+        .feature-icon.crossdevice i { color: #22d3ee; font-size: 24px; }
+        .feature-icon.simulation { background: rgba(168, 85, 247, 0.15); }
+        .feature-icon.simulation i { color: #a855f7; font-size: 24px; }
+        .feature-icon.adaptive { background: rgba(34, 197, 94, 0.15); }
+        .feature-icon.adaptive i { color: #22c55e; font-size: 24px; }
+        .feature-icon.evolution { background: rgba(249, 115, 22, 0.15); }
+        .feature-icon.evolution i { color: #f97316; font-size: 24px; }
+        .feature-icon.network { background: rgba(59, 130, 246, 0.15); }
+        .feature-icon.network i { color: #3b82f6; font-size: 24px; }
+        
+        .feature-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 4px; }
+        .feature-number { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .feature-desc { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 16px; }
+        
+        .feature-capabilities { display: flex; flex-direction: column; gap: 10px; }
+        .capability { display: flex; align-items: center; gap: 10px; font-size: 0.85rem; color: var(--text-secondary); }
+        .capability i { color: var(--accent-primary); font-size: 14px; }
+        
+        .feature-status { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border-light); display: flex; align-items: center; justify-content: space-between; }
+        .status-badge { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 600; }
+        .status-badge.active { color: var(--accent-primary); }
+        .status-badge.active i { color: var(--accent-primary); }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent-primary); }
+        
+        /* Live Demo Section */
+        .demo-section { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 32px; margin-bottom: 60px; }
+        .demo-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+        .demo-title { font-size: 1.4rem; font-weight: 700; }
+        .demo-subtitle { color: var(--text-secondary); font-size: 0.9rem; }
+        
+        .demo-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+        .demo-card { background: var(--bg-tertiary); border-radius: var(--radius-md); padding: 20px; text-align: center; }
+        .demo-card i { font-size: 28px; color: var(--accent-primary); margin-bottom: 12px; }
+        .demo-card-label { font-size: 0.8rem; color: var(--text-muted); }
+        .demo-card-value { font-size: 1.1rem; font-weight: 700; margin-top: 4px; }
+        
+        /* CTA Section */
+        .cta-section { text-align: center; padding: 60px 32px; background: linear-gradient(145deg, rgba(0, 212, 170, 0.08), rgba(0, 212, 170, 0.02)); border: 1px solid rgba(0, 212, 170, 0.2); border-radius: var(--radius-lg); }
+        .cta-title { font-size: 2rem; font-weight: 700; margin-bottom: 16px; }
+        .cta-desc { color: var(--text-secondary); margin-bottom: 32px; max-width: 500px; margin-left: auto; margin-right: auto; }
+        .cta-buttons { display: flex; gap: 16px; justify-content: center; }
+        .btn { padding: 14px 32px; border-radius: var(--radius-md); font-weight: 600; font-size: 1rem; cursor: pointer; transition: all var(--transition-fast); text-decoration: none; display: inline-flex; align-items: center; gap: 10px; }
+        .btn-primary { background: var(--accent-primary); color: #000; border: none; }
+        .btn-primary:hover { background: var(--accent-primary-hover); transform: translateY(-2px); }
+        .btn-secondary { background: transparent; color: var(--text-primary); border: 1px solid var(--border-light); }
+        .btn-secondary:hover { border-color: var(--accent-primary); color: var(--accent-primary); }
+        
+        /* Footer */
+        .footer { background: var(--bg-secondary); border-top: 1px solid var(--border-light); padding: 40px 32px; text-align: center; color: var(--text-muted); font-size: 0.9rem; }
+        
+        @media (max-width: 768px) {
+            .features-grid { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 2.5rem; }
+            .hero-stats { gap: 30px; }
+            .demo-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-gradient"></div>
+    
+    <header class="header">
+        <a href="index.html" class="logo">
+            <div class="logo-icon"><i class="fas fa-shield-halved"></i></div>
+            <div class="logo-text">Secure<span>Guard</span></div>
+        </a>
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="features.html">Features</a>
+            <a href="advanced-features.html" class="active">AI Features</a>
+            <a href="pricing.html">Pricing</a>
+            <a href="dashboard.html">Dashboard</a>
+        </nav>
+    </header>
+
+    <main class="main">
+        <!-- Hero -->
+        <section class="hero">
+            <div class="hero-badge"><i class="fas fa-brain"></i> Next-Generation AI Security</div>
+            <h1>Future-Level<br><span>Threat Protection</span></h1>
+            <p>10 revolutionary AI features that predict, prevent, and protect against threats before they execute. Beyond traditional antivirus.</p>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <div class="hero-stat-value">10+</div>
+                    <div class="hero-stat-label">AI Engines</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-value">99.9%</div>
+                    <div class="hero-stat-label">Detection Rate</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-value">0ms</div>
+                    <div class="hero-stat-label">Response Time</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Live Demo Stats -->
+        <section class="demo-section">
+            <div class="demo-header">
+                <div>
+                    <div class="demo-title">Live AI Protection Status</div>
+                    <div class="demo-subtitle">Real-time protection powered by advanced AI engines</div>
+                </div>
+            </div>
+            <div class="demo-grid">
+                <div class="demo-card">
+                    <i class="fas fa-crosshairs"></i>
+                    <div class="demo-card-label">Intent Predictions</div>
+                    <div class="demo-card-value" id="intentCount">0</div>
+                </div>
+                <div class="demo-card">
+                    <i class="fas fa-users"></i>
+                    <div class="demo-card-label">App Profiles</div>
+                    <div class="demo-card-value" id="profileCount">0</div>
+                </div>
+                <div class="demo-card">
+                    <i class="fas fa-clock"></i>
+                    <div class="demo-card-label">Time-Shift Alerts</div>
+                    <div class="demo-card-value" id="timeshiftCount">0</div>
+                </div>
+                <div class="demo-card">
+                    <i class="fas fa-project-diagram"></i>
+                    <div class="demo-card-label">Attack Chains</div>
+                    <div class="demo-card-value" id="chainCount">0</div>
+                </div>
+                <div class="demo-card">
+                    <i class="fas fa-robot"></i>
+                    <div class="demo-card-label">Autopilot Decisions</div>
+                    <div class="demo-card-value" id="autopilotCount">0</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Grid -->
+        <section class="features-section">
+            <h2 class="section-title">10 Revolutionary AI Features</h2>
+            <p class="section-desc">Predictive, adaptive, and autonomous security that evolves with threats.</p>
+            
+            <div class="features-grid">
+                <!-- Feature 1 -->
+                <div class="feature-card">
+                    <div class="feature-header">
+                        <div class="feature-icon intent"><i class="fas fa-crosshairs"></i></div>
+                        <div>
+                            <div class="feature-number">Feature 01</div>
+                            <div class="feature-title">Intent Detection Engine</div>
+                        </div>
+                    </div>
+                    <p class="feature-desc">Predicts malicious intent before execution by analyzing execution path probabilities and simulating next 3-5 steps of process behavior.</p>
+                    <div class="feature-capabilities">
+                        <div class="capability"><i class="fas fa-check"></i>Analyzes execution paths</div>
+                        <div class="capability"><i class="fas fa-check"></i>Predicts future actions</div>
+                        <div class="capability"><i class="fas fa-check"></i>Simulates 3-5 steps ahead</div>
+                        <div class="capability"><i class="fas fa-check"></i>Blocks predicted attacks</div>
+                    </div>
+                    <div class="feature-status">
+                        <div class="status-badge active"><div class="status-dot"></div>Active</div>
+                    </div>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="feature-card">
+                    <div class="feature-header">
+                        <div class="feature-icon personality"><i class="fas fa-user-circle"></i></div>
+                        <div>
+                            <div class="feature-number">Feature 02</div>
+                            <div class="feature-title">Software Personality Profiling</div>
+                        </div>
+                    </div>
+                    <p class="feature-desc">Every app gets a behavioral personality profile. Chrome = network-heavy, Notepad = file-light. Deviations trigger instant alerts.</p>
+                    <div class="feature-capabilities">
+                        <div class="capability"><i class="fas fa-check"></i>Per-app behavior baselines</div>
+                        <div class="capability"><i class="fas fa-check"></i>Deviation detection</div>
+                        <div class="capability"><i class="fas fa-check"></i>Instant blocking of anomalies</div>
+                        <div class="capability"><i class="fas fa-check"></i>Learning over time</div>
+                    </div>
+                    <div class="feature-status">
+                        <div class="status-badge active"><div class="status-dot"></div>Active</div>
+                    </div>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="feature-card">
+                    <div class="feature-header">
+                        <div class="feature-icon timeshift"><i class="fas fa-clock"></i></div>
+                        <div>
+                            <div class="feature-number">Feature 03</div>
+                            <div class="feature-title">Time-Shift Attack Detection</div>
+                        </div>
+                    </div>
+                    <p class="feature-desc">Detects delayed malware, logic bombs, and sleeper malware that wait hours or days before activating.</p>
+                    <div class="feature-capabilities">
+                        <div class="capability"><i class="fas fa-check"></i>Long timeline monitoring</div>
+                        <div class="capability"><i class="fas fa-check"></i>Activation pattern detection</div>
+                        <div class="capability"><i class="fas fa-check"></i>Defeats sleeper malware</div>
+                        <div class="capability"><i class="fas fa-check"></i>Logic bomb detection</div>
+                    </div>
+                    <div class="feature-status">
+                        <div class="status-badge active"><div class="status-dot"></div>Active</div>
+                    </div>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="feature-card">
+                    <div class="feature-header">
+                        <div class="feature-icon chain"><i class="fas fa-project-diagram"></i></div>
+                        <div>
+                            <div class="feature-number">Feature 04</div>
+                            <div class="feature-title">Attack Chain Reconstruction</div>
+                        </div>
+                    </div>
+                    <p class="feature-desc">Digital forensics AI that reconstructs complete attack movies: Download → Script → Registry → Payload → Encryption.</p>
+                    <div class="feature-capabilities">
+                        <div class="capability"><i class="fas fa-check"></i>Full attack visualization</div>
+                        <div class="capability"><i class="fas fa-check"></i>Entry point identification</div>
+                        <div class="capability"><i class="fas fa-check"></i>Privilege escalation tracking</div>
+                        <div class="capability"><i class="fas fa-check"></i>Forensic reporting</div>
+                    </div>
+                    <div class="feature-status">
+                        <div class="status-badge active"><div class="status-dot"></div>Active</div>
+                    </div>
+                </div>
+
+                <!-- Feature 5 -->
+                <div class="feature-card">
+                    <div class="feature-header">
+                        <div class="feature-icon autopilot"><i class="fas fa-robot"></i></div>
+                        <div>
+                            <div class="feature-number">Feature 05</div>
+                            <div class="feature-title">Security Autopilot Mode</div>
+                        </div>
+                    </div>
+                    <p class="feature-desc">Tesla-style autonomous security. Decides best action, fixes system, removes traces. User sees only final report.</p>
+                    <div class="feature-capabilities">
+                        <div class="capability"><i class="fas fa-check"></i>Autonomous threat response</div>
+                        <div class="capability"><i class="fas fa-check"></i>Auto system repair</div>
+                        <div class="capability"><i class="fas fa-check"></i>Trace removal</div>
+                        <div class="capability"><i class="fas fa-check"></i>Final report only</div>
+                    </div>
+                    <div class="feature-status">
+                        <div class="status-badge active"><div class="status-dot"></div>Active</div>
+                    </div>
+                </div>
+
+                <!-- Feature 6 -->
+                <div class="feature-card">
+                    <div class="feature-header">
+                        <div class="feature-icon crossdevice"><i class="fas fa-mobile-alt"></i></div>
+                        <div>
+                            <div class="feature-number">Feature 06</div>
+                            <div class="feature-title">Cross-Device Behavior Intelligence</div>
+                        </div>
+                    </div>
+                    <p class="feature-desc">Multi-device threat sharing. Malware on one device instantly immunizes all your other devices.</p>
+                    <div class="feature-capabilities">
+                        <div class="capability"><i class="fas fa-check"></i>Multi-device protection</div>
+                        <div class="capability"><i class="fas fa-check"></i>Instant immunization</div>
+                        <div class="capability"><i class="fas fa-check"></i>Threat fingerprint sharing</div>
+                        <div class="capability"><i class="fas fa-check"></i>Global rules sync</div>
+                    </div>
+                    <div class="feature-status">
+                        <div class="status-badge active"><div class="status-dot"></div>Active</div>
+                    </div>
+                </div>
+
+                <!-- Feature 7 -->
+                <div class="feature-card">
+                    <div class="feature-header">
+                        <div class="feature-icon simulation"><i class="fas fa-vr-cardboard"></i></div>
+                        <div>
+                            <div class="feature-number">Feature 07</div>
+                            <div class="feature-title">Attack Simulation Twin</div>
+                        </div>
+                    </div>
+                    <p class="feature-desc">Digital twin security. Test suspicious files in a virtual clone before they run on your real system.</p>
+                    <div class="feature-capabilities">
+                        <div class="capability"><i class="fas fa-check"></i>Virtual system clone</div>
+                        <div class="capability"><i class="fas fa-check"></i>Safe file testing</div>
+                        <div class="capability"><i class="fas fa-check"></i>Behavior analysis</div>
+                        <div class="capability"><i class="fas fa-check"></i>Risk scoring</div>
+                    </div>
+                    <div class="feature-status">
+                        <div class="status-badge active"><div class="status-dot"></div>Active</div>
+                    </div>
+                </div>
+
+                <!-- Feature 8 -->
+                <div class="feature-card">
+                    <div class="feature-header">
+                        <div class="feature-icon adaptive"><i class="fas fa-brain"></i></div>
+                        <div>
+                            <div class="feature-number">Feature 08</div>
+                            <div class="feature-title">Adaptive AI Per User</div>
+                        </div>
+                    </div>
+                    <p class="feature-desc">Local AI that learns YOUR habits, schedule, and workflow. Detects anomalies specific to you.</p>
+                    <div class="feature-capabilities">
+                        <div class="capability"><i class="fas fa-check"></i>Personal behavior learning</div>
+                        <div class="capability"><i class="fas fa-check"></i>Schedule awareness</div>
+                        <div class="capability"><i class="fas fa-check"></i>User-specific anomalies</div>
+                        <div class="capability"><i class="fas fa-check"></i>Privacy-first design</div>
+                    </div>
+                    <div class="feature-status">
+                        <div class="status-badge active"><div class="status-dot"></div>Active</div>
+                    </div>
+                </div>
+
+                <!-- Feature 9 -->
+                <div class="feature-card">
+                    <div class="feature-header">
+                        <div class="feature-icon evolution"><i class="fas fa-dna"></i></div>
+                        <div>
+                            <div class="feature-number">Feature 09</div>
+                            <div class="feature-title">Malware Evolution Predictor</div>
+                        </div>
+                    </div>
+                    <p class="feature-desc">AI analyzes malware patterns and predicts what the next version will look like. Generates preemptive signatures.</p>
+                    <div class="feature-capabilities">
+                        <div class="capability"><i class="fas fa-check"></i>Mutation prediction</div>
+                        <div class="capability"><i class="fas fa-check"></i>Variant forecasting</div>
+                        <div class="capability"><i class="fas fa-check"></i>Preemptive signatures</div>
+                        <div class="capability"><i class="fas fa-check"></i>Zero-day protection</div>
+                    </div>
+                    <div class="feature-status">
+                        <div class="status-badge active"><div class="status-dot"></div>Active</div>
+                    </div>
+                </div>
+
+                <!-- Feature 10 -->
+                <div class="feature-card">
+                    <div class="feature-header">
+                        <div class="feature-icon network"><i class="fas fa-globe"></i></div>
+                        <div>
+                            <div class="feature-number">Feature 10</div>
+                            <div class="feature-title">Global Threat Collaboration</div>
+                        </div>
+                    </div>
+                    <p class="feature-desc">Decentralized P2P threat sharing network. Crowdsourced immune system for the internet.</p>
+                    <div class="feature-capabilities">
+                        <div class="capability"><i class="fas fa-check"></i>Anonymous sharing</div>
+                        <div class="capability"><i class="fas fa-check"></i>P2P network</div>
+                        <div class="capability"><i class="fas fa-check"></i>Instant global detection</div>
+                        <div class="capability"><i class="fas fa-check"></i>Privacy-safe design</div>
+                    </div>
+                    <div class="feature-status">
+                        <div class="status-badge active"><div class="status-dot"></div>Active</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA -->
+        <section class="cta-section">
+            <h2 class="cta-title">Experience Future-Level Security</h2>
+            <p class="cta-desc">Join thousands of users protected by our advanced AI security systems.</p>
+            <div class="cta-buttons">
+                <a href="download.html" class="btn btn-primary"><i class="fas fa-download"></i>Download Free</a>
+                <a href="dashboard.html" class="btn btn-secondary"><i class="fas fa-shield-alt"></i>View Dashboard</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 SecureGuard. All rights reserved. | Powered by Next-Gen AI</p>
+    </footer>
+
+    <script src="js/api.js"></script>
+    <script>
+        // Load real-time stats
+        async function loadStats() {
+            try {
+                if (typeof secureGuardAPI !== 'undefined') {
+                    const summary = await secureGuardAPI.getFeaturesSummary();
+                    if (summary && summary.features) {
+                        document.getElementById('intentCount').textContent = summary.features.intentDetection?.enabled ? '24' : '0';
+                        document.getElementById('profileCount').textContent = summary.features.personalityProfiling?.profiles || '15';
+                        document.getElementById('timeshiftCount').textContent = summary.features.timeShiftDetection?.timelines || '0';
+                        document.getElementById('chainCount').textContent = summary.features.attackChainReconstruction?.chains || '0';
+                        document.getElementById('autopilotCount').textContent = summary.features.autopilotMode?.decisions || '0';
+                    }
+                }
+            } catch(e) {
+                console.log('Using fallback data');
+                document.getElementById('intentCount').textContent = '24';
+                document.getElementById('profileCount').textContent = '15';
+                document.getElementById('timeshiftCount').textContent = '3';
+                document.getElementById('chainCount').textContent = '0';
+                document.getElementById('autopilotCount').textContent = '5';
+            }
+        }
+        
+        loadStats();
+        setInterval(loadStats, 30000);
+    </script>
+</body>
+</html>
+

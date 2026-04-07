@@ -1,0 +1,35 @@
+
+=== Loading Training Data ===
+Generating 2000 sample training data...
+
+Dataset Summary:
+  Total samples: 2000
+  Features: 41
+  Malware samples: 1000
+  Benign samples: 1000
+
+Training samples: 1600
+Test samples: 400
+
+=== Training Model ===
+Training lightgbm model...
+Traceback (most recent call last):
+  File "c:\Users\mehta\Desktop\SecureGuard\ml-training\train_static_model.py", line 806, in <module>
+    main()
+    ~~~~^^
+  File "c:\Users\mehta\Desktop\SecureGuard\ml-training\train_static_model.py", line 697, in main
+    model.train(
+    ~~~~~~~~~~~^
+        X_train, y_train,
+        ^^^^^^^^^^^^^^^^^
+        perform_cv=not args.no_cv,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+        cv_folds=args.cv_folds
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "c:\Users\mehta\Desktop\SecureGuard\ml-training\train_static_model.py", line 140, in train
+    X_train_processed = self.preprocess(X_train, fit=True)
+  File "c:\Users\mehta\Desktop\SecureGuard\ml-training\train_static_model.py", line 125, in preprocess
+    X = np.nan_to_num(X, nan=0.0, posinf=1e6, negin=-1e6)
+TypeError: nan_to_num() got an unexpected keyword argument 'negin'. Did you mean 'neginf'?

@@ -1,0 +1,36 @@
+{
+  "signatures": {
+    "eicar": "44d88612fea8a8f36de82e1278abb02f",
+    "eicar_alternative1": "894970c2e7c92c72f6c7d3f8d0e5a84c",
+    "eicar_alternative2": "3395506fcf6a4c8c8c54e7c2c2c3b3a5",
+    "test_malware_1": "5d41402abc4b2a76b9719d911017c592",
+    "test_malware_2": "098f6bcd4621d373cade4e832627b4f6",
+    "test_malware_3": "ad0234829205b9033196ba818f7a872b",
+    "test_malware_4": "8277e0910d750195b448797616e091ad",
+    "test_malware_5": "5ebe2294ecd0e0f08eab7690d2a6ee69",
+    "trojan_generic_1": "31d6cfe0d16ae931b73c59d7e0c089c0",
+    "trojan_generic_2": "b48cfad7788f54f737913f39879e4a5b",
+    "trojan_generic_3": "d41d8cd98f00b204e9800998ecf8427e",
+    "ransomware_test_1": "098f6bcd4621d373cade4e832627b4f6",
+    "adware_test_1": "e99a18c428cb38d5f260853678922e03",
+    "spyware_test_1": "25d55ad283aa400af464c76d713c07ad",
+    "backdoor_test_1": "8277e0910d750195b448797616e091ad",
+    "worm_test_1": "d41d8cd98f00b204e9800998ecf8427e",
+    "keylogger_test_1": "5ebe2294ecd0e0f08eab7690d2a6ee69",
+    "rootkit_test_1": "b48cfad7788f54f737913f39879e4a5b",
+    "virus_heuristic_1": "eb5a2a96c3e93c5e9d9c0c3c8e7e3d3",
+    "virus_heuristic_2": "f7d28e8c3a8b5c6d9e0f1a2b3c4d5e6"
+  },
+  "threat_categories": {
+    "trojan": ["trojan_generic_1", "trojan_generic_2", "trojan_generic_3"],
+    "ransomware": ["ransomware_test_1"],
+    "adware": ["adware_test_1"],
+    "spyware": ["spyware_test_1"],
+    "backdoor": ["backdoor_test_1"],
+    "worm": ["worm_test_1"],
+    "keylogger": ["keylogger_test_1"],
+    "rootkit": ["rootkit_test_1"],
+    "virus": ["virus_heuristic_1", "virus_heuristic_2"]
+  },
+  "last_updated": "2025-01-01T00:00:00"
+}

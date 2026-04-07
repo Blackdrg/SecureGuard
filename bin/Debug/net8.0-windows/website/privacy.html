@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Protection - SecureGuard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0ea5e9;
+            --primary-dark: #0284c7;
+            --secondary: #10b981;
+            --dark: #0f172a;
+            --dark-2: #1e293b;
+            --dark-3: #334155;
+            --gray: #64748b;
+            --light: #f8fafc;
+            --white: #ffffff;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--dark);
+            color: var(--light);
+            line-height: 1.6;
+        }
+        
+        .bg-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            background: 
+                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(14, 165, 233, 0.15), transparent),
+                radial-gradient(ellipse 60% 40% at 80% 60%, rgba(16, 185, 129, 0.1), transparent);
+        }
+        
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1rem 0;
+            background: rgba(15, 23, 42, 0.9);
+            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .nav-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--white);
+            text-decoration: none;
+        }
+        
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .logo-icon i { color: white; font-size: 20px; }
+        
+        .nav-links { display: flex; gap: 2rem; list-style: none; }
+        
+        .nav-links a {
+            color: var(--gray);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        
+        .nav-links a:hover, .nav-links a.active { color: var(--white); }
+        
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 8rem 2rem 4rem;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--white), var(--gray));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--gray);
+            margin-bottom: 3rem;
+            max-width: 600px;
+        }
+        
+        .privacy-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+        
+        .privacy-card {
+            background: var(--dark-2);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .privacy-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(14, 165, 233, 0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        
+        .privacy-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(16, 185, 129, 0.2));
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.25rem;
+        }
+        
+        .privacy-icon i {
+            font-size: 24px;
+            color: var(--primary);
+        }
+        
+        .privacy-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+        
+        .privacy-card p {
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+        
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.5rem;
+            background: var(--dark-2);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+        }
+        
+        .toggle-info h4 {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .toggle-info p {
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+        
+        .toggle {
+            width: 52px;
+            height: 28px;
+            background: var(--dark-3);
+            border-radius: 14px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .toggle.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-color: var(--primary);
+        }
+        
+        .toggle::after {
+            content: '';
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: all 0.2s;
+        }
+        
+        .toggle.active::after {
+            left: 26px;
+        }
+        
+        .status-card {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(14, 165, 233, 0.1));
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .status-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .status-icon i {
+            font-size: 28px;
+            color: white;
+        }
+        
+        .status-info h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .status-info p {
+            color: var(--gray);
+        }
+        
+        @media (max-width: 768px) {
+            .privacy-grid { grid-template-columns: 1fr; }
+            h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-gradient"></div>
+    
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-shield-halved"></i>
+                </div>
+                SecureGuard
+            </a>
+            <ul class="nav-links">
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="features.html">Features</a></li>
+                <li><a href="privacy.html" class="active">Privacy</a></li>
+                <li><a href="settings.html">Settings</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <h1>Privacy Protection</h1>
+        <p class="subtitle">Control your digital privacy and protect your personal information from prying eyes.</p>
+        
+        <div class="status-card">
+            <div class="status-icon">
+                <i class="fas fa-shield-check"></i>
+            </div>
+            <div class="status-info">
+                <h2>Privacy Shield Active</h2>
+                <p>Your privacy is being protected in real-time</p>
+            </div>
+        </div>
+        
+        <div class="privacy-grid">
+            <div class="privacy-card">
+                <div class="privacy-icon">
+                    <i class="fas fa-video"></i>
+                </div>
+                <h3>Webcam Protection</h3>
+                <p>Block unauthorized access to your webcam and get notified when apps try to use it.</p>
+            </div>
+            
+            <div class="privacy-card">
+                <div class="privacy-icon">
+                    <i class="fas fa-microphone"></i>
+                </div>
+                <h3>Microphone Guard</h3>
+                <p>Prevent malware from recording audio through your microphone without consent.</p>
+            </div>
+            
+            <div class="privacy-card">
+                <div class="privacy-icon">
+                    <i class="fas fa-keyboard"></i>
+                </div>
+                <h3>Anti-Keylogger</h3>
+                <p>Detect and block keyloggers that try to steal your passwords and sensitive data.</p>
+            </div>
+            
+            <div class="privacy-card">
+                <div class="privacy-icon">
+                    <i class="fas fa-browser"></i>
+                </div>
+                <h3>Browser Privacy</h3>
+                <p>Block tracking cookies and prevent websites from collecting your browsing data.</p>
+            </div>
+            
+            <div class="privacy-card">
+                <div class="privacy-icon">
+                    <i class="fas fa-user-secret"></i>
+                </div>
+                <h3>Identity Protection</h3>
+                <p>Monitor the dark web for your personal information and get alerts if leaked.</p>
+            </div>
+            
+            <div class="privacy-card">
+                <div class="privacy-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h3>Data Encryption</h3>
+                <p>Encrypt sensitive files and folders to keep them safe from unauthorized access.</p>
+            </div>
+        </div>
+        
+        <h2 style="margin-top: 3rem; margin-bottom: 1.5rem;">Privacy Controls</h2>
+        
+        <div class="toggle-container">
+            <div class="toggle-info">
+                <h4>Webcam Protection</h4>
+                <p>Notify when apps access your webcam</p>
+            </div>
+            <div class="toggle active" onclick="this.classList.toggle('active')"></div>
+        </div>
+        
+        <div class="toggle-container">
+            <div class="toggle-info">
+                <h4>Microphone Protection</h4>
+                <p>Block unauthorized microphone access</p>
+            </div>
+            <div class="toggle active" onclick="this.classList.toggle('active')"></div>
+        </div>
+        
+        <div class="toggle-container">
+            <div class="toggle-info">
+                <h4>Anti-Keylogger</h4>
+                <p>Detect keylogging attempts</p>
+            </div>
+            <div class="toggle active" onclick="this.classList.toggle('active')"></div>
+        </div>
+        
+        <div class="toggle-container">
+            <div class="toggle-info">
+                <h4>Browser Privacy</h4>
+                <p>Block tracking cookies and scripts</p>
+            </div>
+            <div class="toggle active" onclick="this.classList.toggle('active')"></div>
+        </div>
+        
+        <div class="toggle-container">
+            <div class="toggle-info">
+                <h4>Screen Capture Protection</h4>
+                <p>Prevent screenshots and screen recording</p>
+            </div>
+            <div class="toggle" onclick="this.classList.toggle('active')"></div>
+        </div>
+    </div>
+    
+    <script>
+        // Save toggle states
+        document.querySelectorAll('.toggle').forEach(toggle => {
+            toggle.addEventListener('click', function() {
+                const isActive = this.classList.contains('active');
+                const feature = this.closest('.toggle-container').querySelector('h4').textContent;
+                console.log(`${feature} ${isActive ? 'disabled' : 'enabled'}`);
+            });
+        });
+    </script>
+</body>
+</html>

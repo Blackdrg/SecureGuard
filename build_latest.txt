@@ -1,0 +1,31 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+c:\Users\mehta\Desktop\SecureGuard\src\UI\MainWindow.xaml.cs(308,54): error CS1503: Argument 1: cannot convert from 'SecureGuard.Core.QuarantineItem' to 'System.ReadOnlySpan<char>' [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\UI\MainWindow.xaml.cs(368,36): error CS0246: The type or namespace name 'List<>' could not be found (are you missing a using directive or an assembly reference?) [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\UI\MainWindow.xaml.cs(806,22): warning CS0219: The variable 'processedSize' is assigned but its value is never used [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Core\MalwareSignatureDatabase.cs(315,20): error CS0019: Operator '%' cannot be applied to operands of type 'int' and 'string' [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Core\ProcessTreeAnalyzer.cs(18,66): warning CS0067: The event 'ProcessTreeAnalyzer.PrivilegeEscalationDetected' is never used [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Cloud\CloudThreatIntelligence.cs(19,58): warning CS0067: The event 'CloudThreatIntelligence.ThreatAlert' is never used [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Core\ProcessTreeAnalyzer.cs(19,60): warning CS0067: The event 'ProcessTreeAnalyzer.CodeInjectionDetected' is never used [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Core\SelfDefenseSystem.cs(12,22): warning CS0414: The field 'SelfDefenseSystem._isEnabled' is assigned but its value is never used [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\AI\AiThreatEngine.cs(17,22): warning CS0414: The field 'AiThreatEngine._isModelLoaded' is assigned but its value is never used [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Sandbox\SandboxEngine.cs(9,22): warning CS0414: The field 'SandboxEngine._isRunning' is assigned but its value is never used [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Cloud\CloudThreatIntelligence.cs(17,22): warning CS0414: The field 'CloudThreatIntelligence._isConnected' is assigned but its value is never used [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+
+Build FAILED.
+
+c:\Users\mehta\Desktop\SecureGuard\src\UI\MainWindow.xaml.cs(806,22): warning CS0219: The variable 'processedSize' is assigned but its value is never used [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Core\ProcessTreeAnalyzer.cs(18,66): warning CS0067: The event 'ProcessTreeAnalyzer.PrivilegeEscalationDetected' is never used [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Cloud\CloudThreatIntelligence.cs(19,58): warning CS0067: The event 'CloudThreatIntelligence.ThreatAlert' is never used [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Core\ProcessTreeAnalyzer.cs(19,60): warning CS0067: The event 'ProcessTreeAnalyzer.CodeInjectionDetected' is never used [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Core\SelfDefenseSystem.cs(12,22): warning CS0414: The field 'SelfDefenseSystem._isEnabled' is assigned but its value is never used [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\AI\AiThreatEngine.cs(17,22): warning CS0414: The field 'AiThreatEngine._isModelLoaded' is assigned but its value is never used [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Sandbox\SandboxEngine.cs(9,22): warning CS0414: The field 'SandboxEngine._isRunning' is assigned but its value is never used [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Cloud\CloudThreatIntelligence.cs(17,22): warning CS0414: The field 'CloudThreatIntelligence._isConnected' is assigned but its value is never used [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\UI\MainWindow.xaml.cs(308,54): error CS1503: Argument 1: cannot convert from 'SecureGuard.Core.QuarantineItem' to 'System.ReadOnlySpan<char>' [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\UI\MainWindow.xaml.cs(368,36): error CS0246: The type or namespace name 'List<>' could not be found (are you missing a using directive or an assembly reference?) [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+c:\Users\mehta\Desktop\SecureGuard\src\Core\MalwareSignatureDatabase.cs(315,20): error CS0019: Operator '%' cannot be applied to operands of type 'int' and 'string' [c:\Users\mehta\Desktop\SecureGuard\SecureGuard.csproj]
+    8 Warning(s)
+    3 Error(s)
+
+Time Elapsed 00:00:07.14

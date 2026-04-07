@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - SecureGuard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg-primary: #0b1220;
+            --bg-secondary: #111827;
+            --bg-card: #1a2332;
+            --bg-card-hover: #212d40;
+            --border-color: #2d3748;
+            --border-light: rgba(255,255,255,0.08);
+            --accent-green: #22c55e;
+            --accent-green-light: rgba(34, 197, 94, 0.15);
+            --accent-blue: #3b82f6;
+            --accent-blue-light: rgba(59, 130, 246, 0.15);
+            --accent-red: #ef4444;
+            --accent-red-light: rgba(239, 68, 68, 0.15);
+            --accent-yellow: #f59e0b;
+            --accent-yellow-light: rgba(245, 158, 11, 0.15);
+            --accent-purple: #8b5cf6;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --radius-md: 10px;
+            --radius-lg: 14px;
+            --transition-fast: 0.15s ease;
+            --transition-normal: 0.25s ease;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; line-height: 1.5; }
+        .app-container { display: flex; min-height: 100vh; }
+        
+        /* Sidebar */
+        .sidebar { width: 260px; background: var(--bg-secondary); border-right: 1px solid var(--border-light); display: flex; flex-direction: column; position: fixed; height: 100vh; z-index: 100; }
+        .sidebar-header { padding: 24px; border-bottom: 1px solid var(--border-light); }
+        .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .logo-icon { width: 42px; height: 42px; background: linear-gradient(135deg, var(--accent-green), #16a34a); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3); }
+        .logo-icon i { font-size: 20px; color: white; }
+        .logo-text { font-size: 1.4rem; font-weight: 700; color: var(--text-primary); }
+        .logo-text span { color: var(--accent-green); }
+        .sidebar-nav { flex: 1; padding: 16px; overflow-y: auto; }
+        .nav-section { margin-bottom: 24px; }
+        .nav-section-title { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); padding: 8px 16px; margin-bottom: 4px; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-radius: var(--radius-md); color: var(--text-secondary); text-decoration: none; font-weight: 500; font-size: 0.9rem; transition: all var(--transition-fast); margin-bottom: 2px; cursor: pointer; border: none; background: transparent; width: 100%; text-align: left; }
+        .nav-item:hover { background: rgba(255,255,255,0.05); color: var(--text-primary); }
+        .nav-item.active { background: var(--accent-green-light); color: var(--accent-green); }
+        .nav-item i { font-size: 18px; width: 20px; text-align: center; }
+        .nav-item .badge { margin-left: auto; background: var(--accent-red); color: white; font-size: 0.7rem; padding: 2px 8px; border-radius: 20px; font-weight: 600; }
+        .sidebar-footer { padding: 16px; border-top: 1px solid var(--border-light); }
+        .upgrade-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 14px; background: linear-gradient(135deg, var(--accent-green), #16a34a); border: none; border-radius: var(--radius-md); color: white; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all var(--transition-normal); box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3); }
+        .upgrade-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4); }
+        
+        /* Main Content */
+        .main-content { flex: 1; margin-left: 260px; display: flex; flex-direction: column; }
+        .top-header { background: var(--bg-secondary); border-bottom: 1px solid var(--border-light); padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
+        .page-title { font-size: 1.25rem; font-weight: 600; }
+        .header-right { display: flex; align-items: center; gap: 16px; }
+        .header-btn { width: 40px; height: 40px; border-radius: var(--radius-md); background: var(--bg-card); border: 1px solid var(--border-light); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all var(--transition-fast); position: relative; color: var(--text-secondary); }
+        .header-btn:hover { background: var(--bg-card-hover); color: var(--text-primary); }
+        .header-btn i { font-size: 18px; }
+        .header-btn .notification-dot { position: absolute; top: 8px; right: 8px; width: 8px; height: 8px; background: var(--accent-red); border-radius: 50%; }
+        .user-menu { display: flex; align-items: center; gap: 10px; padding: 8px 16px; background: var(--bg-card); border-radius: 14px; cursor: pointer; transition: all var(--transition-fast); }
+        .user-menu:hover { background: var(--bg-card-hover); }
+        .user-avatar { width: 32px; height: 32px; border-radius: 6px; background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.85rem; }
+        .user-info { display: flex; flex-direction: column; }
+        .user-name { font-weight: 600; font-size: 0.85rem; }
+        .user-plan { font-size: 0.75rem; color: var(--accent-green); }
+        
+        /* Dashboard Content */
+        .dashboard-content { padding: 32px; flex: 1; }
+        .dashboard-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px; }
+        .card { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 24px; transition: all var(--transition-normal); }
+        .card:hover { border-color: var(--border-color); }
+        .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+        .card-title { font-size: 0.9rem; font-weight: 600; color: var(--text-secondary); display: flex; align-items: center; gap: 8px; }
+        .card-title i { font-size: 16px; }
+        .card-action { font-size: 0.8rem; color: var(--accent-blue); text-decoration: none; font-weight: 500; cursor: pointer; }
+        .card-action:hover { text-decoration: underline; }
+        
+        /* Protection Card */
+        .protection-card { grid-column: span 4; }
+        .protection-status { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+        .protection-icon { width: 64px; height: 64px; border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; }
+        .protection-icon.secure { background: var(--accent-green-light); }
+        .protection-icon i { font-size: 28px; color: var(--accent-green); }
+        .protection-info h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 4px; }
+        .protection-info.secure h2 { color: var(--accent-green); }
+        .protection-info p { color: var(--text-secondary); font-size: 0.9rem; }
+        .protection-details { display: flex; gap: 32px; padding-top: 16px; border-top: 1px solid var(--border-light); }
+        .protection-detail-label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 2px; }
+        .protection-detail-value { font-weight: 600; font-size: 0.9rem; }
+        
+        /* Threat Card */
+        .threat-card { grid-column: span 4; }
+        .threat-stats { display: flex; flex-direction: column; gap: 12px; }
+        .threat-stat { display: flex; align-items: center; gap: 16px; padding: 14px; background: rgba(0,0,0,0.2); border-radius: var(--radius-md); }
+        .threat-stat-icon { width: 44px; height: 44px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; }
+        .threat-stat-icon.blocked { background: var(--accent-green-light); }
+        .threat-stat-icon.suspicious { background: var(--accent-yellow-light); }
+        .threat-stat-icon.quarantined { background: var(--accent-blue-light); }
+        .threat-stat-icon i { font-size: 18px; }
+        .threat-stat-icon.blocked i { color: var(--accent-green); }
+        .threat-stat-icon.suspicious i { color: var(--accent-yellow); }
+        .threat-stat-icon.quarantined i { color: var(--accent-blue); }
+        .threat-stat-info h4 { font-size: 1.25rem; font-weight: 700; }
+        .threat-stat-info p { font-size: 0.8rem; color: var(--text-secondary); }
+        
+        /* Health Card */
+        .health-card { grid-column: span 4; }
+        .health-score { text-align: center; padding: 24px 0; }
+        .score-gauge { width: 140px; height: 140px; border-radius: 50%; background: conic-gradient(var(--accent-green) 0deg 288deg, var(--bg-secondary) 288deg 360deg); margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; position: relative; }
+        .score-gauge::before { content: ''; position: absolute; width: 110px; height: 110px; background: var(--bg-card); border-radius: 50%; }
+        .score-value { position: relative; font-size: 2.5rem; font-weight: 800; color: var(--accent-green); }
+        .score-label { font-size: 0.9rem; color: var(--text-secondary); }
+        .health-bars { display: flex; flex-direction: column; gap: 12px; padding-top: 16px; border-top: 1px solid var(--border-light); }
+        .health-bar-item { display: flex; flex-direction: column; gap: 4px; }
+        .health-bar-header { display: flex; justify-content: space-between; font-size: 0.85rem; }
+        .health-bar-label { color: var(--text-secondary); }
+        .health-bar-value { font-weight: 600; }
+        .health-bar { height: 6px; background: var(--bg-secondary); border-radius: 3px; overflow: hidden; }
+        .health-bar-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
+        .health-bar-fill.cpu { background: var(--accent-blue); width: 45%; }
+        .health-bar-fill.ram { background: var(--accent-purple); width: 62%; }
+        .health-bar-fill.disk { background: var(--accent-yellow); width: 38%; }
+        
+        /* Actions Card */
+        .actions-card { grid-column: span 4; }
+        .quick-actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .action-btn { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 20px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-light); border-radius: var(--radius-md); cursor: pointer; transition: all var(--transition-normal); }
+        .action-btn:hover { background: var(--bg-card-hover); border-color: var(--accent-green); transform: translateY(-3px); }
+        .action-btn i { font-size: 24px; color: var(--accent-green); transition: all var(--transition-normal); }
+        .action-btn:hover i { transform: scale(1.1); }
+        .action-btn span { font-weight: 600; font-size: 0.9rem; }
+        .action-btn p { font-size: 0.75rem; color: var(--text-muted); text-align: center; }
+        .action-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        
+        @keyframes scanPulse { 0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(34, 197, 94, 0); } 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
+        .action-btn.scanning i { animation: scanPulse 2s infinite; }
+        
+        /* Activity Card */
+        .activity-card { grid-column: span 4; }
+        .activity-list { display: flex; flex-direction: column; gap: 12px; max-height: 320px; overflow-y: auto; }
+        .activity-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px; background: rgba(0,0,0,0.2); border-radius: var(--radius-md); transition: all var(--transition-fast); }
+        .activity-item:hover { background: rgba(0,0,0,0.3); }
+        .activity-icon { width: 36px; height: 36px; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .activity-icon.threat { background: var(--accent-red-light); }
+        .activity-icon.scan { background: var(--accent-green-light); }
+        .activity-icon.update { background: var(--accent-blue-light); }
+        .activity-icon i { font-size: 16px; }
+        .activity-icon.threat i { color: var(--accent-red); }
+        .activity-icon.scan i { color: var(--accent-green); }
+        .activity-icon.update i { color: var(--accent-blue); }
+        .activity-content { flex: 1; min-width: 0; }
+        .activity-title { font-weight: 600; font-size: 0.9rem; margin-bottom: 2px; }
+        .activity-desc { font-size: 0.8rem; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .activity-time { font-size: 0.75rem; color: var(--text-muted); white-space: nowrap; }
+        
+        /* Analytics Card */
+        .analytics-card { grid-column: span 8; }
+        .chart-container { height: 200px; display: flex; align-items: flex-end; justify-content: space-between; gap: 8px; padding: 16px 0; }
+        .chart-bar { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .chart-bar-fill { width: 100%; background: linear-gradient(to top, var(--accent-green), #16a34a); border-radius: 4px 4px 0 0; transition: height 0.5s ease; min-height: 4px; }
+        .chart-bar-label { font-size: 0.7rem; color: var(--text-muted); }
+        .chart-stats { display: flex; justify-content: space-around; padding-top: 16px; border-top: 1px solid var(--border-light); margin-top: 16px; }
+        .chart-stat { text-align: center; }
+        .chart-stat-value { font-size: 1.25rem; font-weight: 700; }
+        .chart-stat-label { font-size: 0.8rem; color: var(--text-secondary); }
+        
+        /* Protected Card */
+        .protected-card { grid-column: span 4; }
+        .protected-items { display: flex; flex-direction: column; gap: 8px; }
+        .protected-item { display: flex; align-items: center; gap: 12px; padding: 8px; border-radius: 6px; transition: all var(--transition-fast); }
+        .protected-item:hover { background: rgba(0,0,0,0.2); }
+        .protected-item-icon { width: 32px; height: 32px; border-radius: 6px; background: var(--accent-green-light); display: flex; align-items: center; justify-content: center; }
+        .protected-item-icon i { font-size: 14px; color: var(--accent-green); }
+        .protected-item-info { flex: 1; }
+        .protected-item-name { font-weight: 600; font-size: 0.85rem; }
+        .protected-item-status { font-size: 0.75rem; color: var(--accent-green); }
+        
+        /* Modal */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.7); display: none; align-items: center; justify-content: center; z-index: 1000; }
+        .modal-overlay.active { display: flex; }
+        .modal { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 32px; max-width: 500px; width: 90%; text-align: center; }
+        .modal h2 { font-size: 1.5rem; margin-bottom: 16px; }
+        .modal p { color: var(--text-secondary); margin-bottom: 24px; }
+        .progress-bar { height: 8px; background: var(--bg-secondary); border-radius: 4px; overflow: hidden; margin-bottom: 16px; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent-green), #16a34a); border-radius: 4px; transition: width 0.3s ease; }
+        .progress-text { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 8px; }
+        .progress-percent { font-size: 2rem; font-weight: 700; color: var(--accent-green); }
+        .modal-close { padding: 10px 24px; background: var(--bg-secondary); border: 1px solid var(--border-light); border-radius: 6px; color: var(--text-primary); cursor: pointer; font-weight: 500; transition: all var(--transition-fast); }
+        .modal-close:hover { background: var(--bg-card-hover); }
+        
+        /* Toast */
+        .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 1001; display: flex; flex-direction: column; gap: 12px; }
+        .toast { padding: 16px 20px; background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius-md); display: flex; align-items: center; gap: 12px; animation: slideIn 0.3s ease; box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .toast.success { border-left: 4px solid var(--accent-green); }
+        .toast.warning { border-left: 4px solid var(--accent-yellow); }
+        .toast.error { border-left: 4px solid var(--accent-red); }
+        .toast i { font-size: 20px; }
+        .toast.success i { color: var(--accent-green); }
+        .toast.warning i { color: var(--accent-yellow); }
+        .toast.error i { color: var(--accent-red); }
+        .toast-message { font-size: 0.9rem; }
+        
+        /* Responsive */
+        @media (max-width: 1200px) { .protection-card, .threat-card, .health-card, .actions-card, .activity-card { grid-column: span 6; } .analytics-card { grid-column: span 12; } .protected-card { grid-column: span 12; } }
+        @media (max-width: 768px) { .sidebar { transform: translateX(-100%); } .main-content { margin-left: 0; } .protection-card, .threat-card, .health-card, .actions-card, .activity-card, .analytics-card, .protected-card { grid-column: span 12; } .quick-actions { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon"><i class="fas fa-shield-halved"></i></div>
+                    <div class="logo-text">Secure<span>Guard</span></div>
+                </a>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Main</div>
+                    <button class="nav-item active" onclick="navigate('dashboard')"><i class="fas fa-gauge-high"></i>Dashboard</button>
+                    <button class="nav-item" onclick="runQuickScan()"><i class="fas fa-magnifying-glass"></i>Scan</button>
+                    <button class="nav-item" onclick="navigate('protection')"><i class="fas fa-shield-virus"></i>Protection</button>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Security</div>
+                    <button class="nav-item" onclick="showThreats()"><i class="fas fa-triangle-exclamation"></i>Threats<span class="badge" id="threatBadge">3</span></button>
+                    <button class="nav-item" onclick="showQuarantine()"><i class="fas fa-box-archive"></i>Quarantine</button>
+                    <button class="nav-item" onclick="showReports()"><i class="fas fa-chart-line"></i>Reports</button>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">System</div>
+                    <button class="nav-item" onclick="showSettings()"><i class="fas fa-gear"></i>Settings</button>
+                    <button class="nav-item" onclick="showHelp()"><i class="fas fa-circle-question"></i>Help</button>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="upgrade-btn" onclick="upgradePro()"><i class="fas fa-rocket"></i>Upgrade to Pro</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <h1 class="page-title">Dashboard</h1>
+                <div class="header-right">
+                    <button class="header-btn" onclick="showToast('3 new notifications','warning')"><i class="fas fa-bell"></i><span class="notification-dot"></span></button>
+                    <button class="header-btn" onclick="showToast('No new messages','success')"><i class="fas fa-envelope"></i></button>
+                    <div class="user-menu">
+                        <div class="user-avatar">JD</div>
+                        <div class="user-info"><span class="user-name">John Doe</span><span class="user-plan">Pro Plan</span></div>
+                </div>
+            </header>
+
+            <div class="dashboard-content">
+                <div class="dashboard-grid">
+                    <!-- Protection Card -->
+                    <div class="card protection-card">
+                        <div class="card-header">
+                            <span class="card-title"><i class="fas fa-shield-halved"></i>Protection Status</span>
+                            <a href="#" class="card-action" onclick="showToast('Viewing protection details...','success')">View Details</a>
+                        </div>
+                        <div class="protection-status">
+                            <div class="protection-icon secure"><i class="fas fa-check-circle"></i></div>
+                            <div class="protection-info secure"><h2>Protected</h2><p>Real-time protection is active</p></div>
+                        <div class="protection-details">
+                            <div><div class="protection-detail-label">Last Scan</div><div class="protection-detail-value" id="lastScan">2 hours ago</div>
+                            <div><div class="protection-detail-label">Database</div><div class="protection-detail-value" id="dbVersion">v2024.01.15</div>
+                        </div>
+
+                    <!-- Threat Detection -->
+                    <div class="card threat-card">
+                        <div class="card-header">
+                            <span class="card-title"><i class="fas fa-shield-virus"></i>Threat Detection</span>
+                            <a href="#" class="card-action" onclick="showThreats()">View All</a>
+                        </div>
+                        <div class="threat-stats">
+                            <div class="threat-stat"><div class="threat-stat-icon blocked"><i class="fas fa-shield-check"></i></div><div class="threat-stat-info"><h4 id="threatsBlocked">247</h4><p>Threats Blocked</p></div>
+                            <div class="threat-stat"><div class="threat-stat-icon suspicious"><i class="fas fa-exclamation-triangle"></i></div><div class="threat-stat-info"><h4 id="suspiciousActivities">12</h4><p>Suspicious Activities</p></div>
+                            <div class="threat-stat"><div class="threat-stat-icon quarantined"><i class="fas fa-box-archive"></i></div><div class="threat-stat-info"><h4 id="quarantinedFiles">5</h4><p>Quarantined Files</p></div>
+                        </div>
+
+                    <!-- System Health -->
+                    <div class="card health-card">
+                        <div class="card-header"><span class="card-title"><i class="fas fa-server"></i>System Health</span></div>
+                        <div class="health-score">
+                            <div class="score-gauge"><span class="score-value" id="securityScore">95</span></div>
+                            <div class="score-label">Security Score</div>
+                        <div class="health-bars">
+                            <div class="health-bar-item"><div class="health-bar-header"><span class="health-bar-label">CPU Usage</span><span class="health-bar-value" id="cpuUsage">45%</span></div><div class="health-bar"><div class="health-bar-fill cpu" id="cpuBar"></div></div>
+                            <div class="health-bar-item"><div class="health-bar-header"><span class="health-bar-label">RAM Usage</span><span class="health-bar-value" id="ramUsage">62%</span></div><div class="health-bar"><div class="health-bar-fill ram" id="ramBar"></div></div>
+                            <div class="health-bar-item"><div class="health-bar-header"><span class="health-bar-label">Disk Usage</span><span class="health-bar-value" id="diskUsage">38%</span></div><div class="health-bar"><div class="health-bar-fill disk" id="diskBar"></div></div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="card actions-card">
+                        <div class="card-header"><span class="card-title"><i class="fas fa-bolt"></i>Quick Actions</span></div>
+                        <div class="quick-actions">
+                            <button class="action-btn" id="quickScanBtn" onclick="runQuickScan()"><i class="fas fa-magnifying-glass"></i><span>Quick Scan</span><p>2-5 minutes</p></button>
+                            <button class="action-btn" id="fullScanBtn" onclick="runFullScan()"><i class="fas fa-search"></i><span>Full Scan</span><p>30-60 minutes</p></button>
+                            <button class="action-btn" id="updateBtn" onclick="updateDatabase()"><i class="fas fa-database"></i><span>Update DB</span><p>Latest definitions</p></button>
+                            <button class="action-btn" id="reportsBtn" onclick="showReports()"><i class="fas fa-chart-pie"></i><span>Reports</span><p>View analytics</p></button>
+                        </div>
+
+                    <!-- Recent Activity -->
+                    <div class="card activity-card">
+                        <div class="card-header"><span class="card-title"><i class="fas fa-clock-rotate-left"></i>Recent Activity</span><a href="#" class="card-action" onclick="showToast('Viewing all activity...','success')">View All</a></div>
+                        <div class="activity-list" id="activityList"></div>
+
+                    <!-- Security Analytics -->
+                    <div class="card analytics-card">
+                        <div class="card-header"><span class="card-title"><i class="fas fa-chart-column"></i>Security Analytics</span><a href="#" class="card-action" onclick="showReports()">View Reports</a></div>
+                        <div class="chart-container" id="chartContainer"></div>
+                        <div class="chart-stats">
+                            <div class="chart-stat"><div class="chart-stat-value" style="color:var(--accent-green)" id="weeklyThreats">847</div><div class="chart-stat-label">This Week</div>
+                            <div class="chart-stat"><div class="chart-stat-value" id="vsLastWeek">12%</div><div class="chart-stat-label">vs Last Week</div>
+                            <div class="chart-stat"><div class="chart-stat-value" style="color:var(--accent-blue)" id="blockRate">99.2%</div><div class="chart-stat-label">Block Rate</div>
+                        </div>
+
+                    <!-- Protected Items -->
+                    <div class="card protected-card">
+                        <div class="card-header"><span class="card-title"><i class="fas fa-folder-shield"></i>Protected Areas</span></div>
+                        <div class="protected-items">
+                            <div class="protected-item"><div class="protected-item-icon"><i class="fas fa-folder"></i></div><div class="protected-item-info"><div class="protected-item-name">System Files</div><div class="protected-item-status">12,847 protected</div></div>
+                            <div class="protected-item"><div class="protected-item-icon"><i class="fas fa-file-lines"></i></div><div class="protected-item-info"><div class="protected-item-name">Documents</div><div class="protected-item-status">2,341 protected</div></div>
+                            <div class="protected-item"><div class="protected-item-icon"><i class="fas fa-download"></i></div><div class="protected-item-info"><div class="protected-item-name">Downloads</div><div class="protected-item-status">856 protected</div></div>
+                    </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="scanModal">
+        <div class="modal">
+            <h2 id="scanTitle">Quick Scan</h2>
+
+        .health-score { text-align: center; padding: 24px 0; }
+
+        .score-gauge {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: conic-gradient(var(--accent-green) 0deg 288deg, var(--bg-secondary) 288deg 360deg);
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .score-gauge::before {
+            content: '';
+            position: absolute;
+            width: 110px;
+            height: 110px;
+            background: var(--bg-card);
+            border-radius: 50%;
+        }
+
+        .score-value { position: relative; font-size: 2.5rem; font-weight: 800; color: var(--accent-green); }
+        .score-label { font-size: 0.9rem; color: var(--text-secondary); }
+
+        .health-bars { display: flex; flex-direction: column; gap: 12px; padding-top: 16px; border-top: 1px solid var(--border-light); }
+
+        .health-bar-item { display: flex; flex-direction: column; gap: 4px; }
+
+        .health-bar-header { display: flex; justify-content: space-between; font-size: 0.85rem; }
+        .health-bar-label { color: var(--text-secondary); }
+        .health-bar-value { font-weight: 600; }
+
+        .health-bar { height: 6px; background: var(--bg-secondary); border-radius: 3px; overflow: hidden; }
+
+        .health-bar-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
+        .health-bar-fill.cpu { background: var(--accent-blue); width: 45%; }
+        .health-bar-fill.ram { background: var(--accent-purple); width: 62%; }
+        .health-bar-fill.disk { background: var(--accent-yellow); width: 38%; }
+
+        /* Actions Card */
+        .actions-card { grid-column: span 4; }
+
+        .quick-actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+        .action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 20px;
+            background: rgba(0,0,0,0.2);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+
+        .action-btn:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--accent-green);
+            transform: translateY(-3px);
+        }
+
+        .action-btn i {
+            font-size: 24px;
+            color: var(--accent-green);
+            transition: all var(--transition-normal);
+        }
+
+        .action-btn:hover i { transform: scale(1.1); }
+
+        .action-btn span { font-weight: 600; font-size: 0.9rem; }
+        .action-btn p { font-size: 0.75rem; color: var(--text-muted); text-align: center; }
+
+        .action-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .action-btn:disabled:hover { transform: none; border-color: var(--border-light); }
+
+        /* Scanning Animation scan-pulse {
+            */
+        @keyframes 0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(34, 197, 94, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+
+        .action-btn.scanning i { animation: scan-pulse 2s infinite; }
+
+        /* Activity Card */
+        .activity-card { grid-column: span 4; }
+
+        .activity-list { display: flex; flex-direction: column; gap: 12px; max-height: 320px; overflow-y: auto; }
+
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(0,0,0,0.2);
+            border-radius: var(--radius-md);
+            transition: all var(--transition-fast);
+        }
+
+        .activity-item:hover { background: rgba(0,0,0,0.3); }
+
+        .activity-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .activity-icon.threat { background: var(--accent-red-light); }
+        .activity-icon.scan { background: var(--accent-green-light); }
+        .activity-icon.update { background: var(--accent-blue-light); }
+
+        .activity-icon i { font-size: 16px; }
+        .activity-icon.threat i { color: var(--accent-red); }
+        .activity-icon.scan i { color: var(--accent-green); }
+        .activity-icon.update i { color: var(--accent-blue); }
+
+        .activity-content { flex: 1; min-width: 0; }
+        .activity-title { font-weight: 600; font-size: 0.9rem; margin-bottom: 2px; }
+        .activity-desc { font-size: 0.8rem; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .activity-time { font-size: 0.75rem; color: var(--text-muted); white-space: nowrap; }
+
+        /* Analytics Card */
+        .analytics-card { grid-column: span 8; }
+
+        .chart-container {
+            height: 200px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 16px 0;
+        }
+
+        .chart-bar { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+
+        .chart-bar-fill {
+            width: 100%;
+            background: linear-gradient(to top, var(--accent-green), #16a34a);
+            border-radius: 4px 4px 0 0;
+            transition: height 0.5s ease;
+            min-height: 4px;
+        }
+
+        .chart-bar-label { font-size: 0.7rem; color: var(--text-muted); }
+
+        .chart-stats { display: flex; justify-content: space-around; padding-top: 16px; border-top: 1px solid var(--border-light); margin-top: 16px; }
+
+        .chart-stat { text-align: center; }
+        .chart-stat-value { font-size: 1.25rem; font-weight: 700; }
+        .chart-stat-label { font-size: 0.8rem; color: var(--text-secondary); }
+
+        /* Protected Card */
+        .protected-card { grid-column: span 4; }
+
+        .protected-items { display: flex; flex-direction: column; gap: 8px; }
+
+        .protected-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px;
+            border-radius: 6px;
+            transition: all var(--transition-fast);
+        }
+
+        .protected-item:hover { background: rgba(0,0,0,0.2); }
+
+        .protected-item-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            background: var(--accent-green-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .protected-item-icon i { font-size: 14px; color: var(--accent-green); }
+        .protected-item-info { flex: 1; }
+        .protected-item-name { font-weight: 600; font-size: 0.85rem; }
+        .protected-item-status { font-size: 0.75rem; color: var(--accent-green); }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active { display: flex; }
+
+        .modal {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .modal h2 { font-size: 1.5rem; margin-bottom: 16px; }
+        .modal p { color: var(--text-secondary); margin-bottom: 24px; }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--bg-secondary);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-green), #16a34a);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 8px; }
+        .progress-percent { font-size: 2rem; font-weight: 700; color: var(--accent-green); }
+
+        .modal-close {
+            padding: 10px 24px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            color: var(--text-primary);
+            cursor: pointer;
+            font-weight: 500;
+            transition: all var(--transition-fast);
+        }
+
+        .modal-close:hover { background: var(--bg-card-hover); }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 1001;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .toast {
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .toast.success { border-left: 4px solid var(--accent-green); }
+        .toast.warning { border-left: 4px solid var(--accent-yellow); }
+        .toast.error { border-left: 4px solid var(--accent-red); }
+
+        .toast i { font-size: 20px; }
+        .toast.success i { color: var(--accent-green); }
+        .toast.warning i { color: var(--accent-yellow); }
+        .toast.error i { color: var(--accent-red); }
+
+        .toast-message { font-size: 0.9rem; }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .protection-card, .threat-card, .health-card, .actions-card, .activity-card { grid-column: span 6; }
+            .analytics-card { grid-column: span 12; }
+            .protected-card { grid-column: span 12; }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .main-content { margin-left: 0; }
+            .protection-card, .threat-card, .health-card, .actions-card, .activity-card, .analytics-card, .protected-card { grid-column: span 12; }
+            .quick-actions { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-shield-halved"></i>
+                    </div>
+                    <div class="logo-text">Secure<span>Guard</span></div>
+                </a>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Main</div>
+                    <button class="nav-item active" onclick="navigateTo('dashboard')">
+                        <i class="fas fa-gauge-high"></i>
+                        Dashboard
+                    </button>
+                    <button class="nav-item" onclick="runQuickScan()">
+                        <i class="fas fa-magnifying-glass"></i>
+                        Scan
+                    </button>
+                    <button class="nav-item" onclick="navigateTo('protection')">
+                        <i class="fas fa-shield-virus"></i>
+                        Protection
+                    </button>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Security</div>
+                    <button class="nav-item" onclick="showThreats()">
+                        <i class="fas fa-triangle-exclamation"></i>
+                        Threats
+                        <span class="badge" id="threatBadge">3</span>
+                    </button>
+                    <button class="nav-item" onclick="showQuarantine()">
+                        <i class="fas fa-box-archive"></i>
+                        Quarantine
+                    </button>
+                    <button class="nav-item" onclick="showReports()">
+                        <i class="fas fa-chart-line"></i>
+                        Reports
+                    </button>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">System</div>
+                    <button class="nav-item" onclick="showSettings()">
+                        <i class="fas fa-gear"></i>
+                        Settings
+                    </button>
+                    <button class="nav-item" onclick="showHelp()">
+                        <i class="fas fa-circle-question"></i>
+                        Help
+                    </button>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button class="upgrade-btn" onclick="upgradeToPro()">
+                    <i class="fas fa-rocket"></i>
+                    Upgrade to Pro
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Header -->
+            <header class="top-header">
+                <h1 class="page-title">Dashboard</h1>
+                <div class="header-right">
+                    <button class="header-btn" onclick="showNotifications()" title="Notifications">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-dot"></span>
+                    </button>
+                    <button class="header-btn" onclick="showMessages()" title="Messages">
+                        <i class="fas fa-envelope"></i>
+                    </button>
+                    <div class="user-menu">
+                        <div class="user-avatar">JD</div>
+                        <div class="user-info">
+                            <span class="user-name">John Doe</span>
+                            <span class="user-plan">Pro Plan</span>
+                        </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="dashboard-content">
+                <div class="dashboard-grid">
+                    
+                    <!-- Protection Status -->
+                    <div class="card protection-card">
+                        <div class="card-header">
+                            <span class="card-title">
+                                <i class="fas fa-shield-halved"></i>
+                                Protection Status
+                            </span>
+                            <a href="#" class="card-action" onclick="viewProtectionDetails()">View Details</a>
+                        </div>
+                        <div class="protection-status">
+                            <div class="protection-icon secure">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="protection-info secure">
+                                <h2>Protected</h2>
+                                <p>Real-time protection is active</p>
+                            </div>
+                        <div class="protection-details">
+                            <div>
+                                <div class="protection-detail-label">Last Scan</div>
+                                <div class="protection-detail-value" id="lastScanTime">2 hours ago</div>
+                            <div>
+                                <div class="protection-detail-label">Database</div>
+                                <div class="protection-detail-value" id="dbVersion">v2024.01.15</div>
+                        </div>
+
+                    <!-- Threat Detection -->
+                    <div class="card threat-card">
+                        <div class="card-header">
+                            <span class="card-title">
+                                <i class="fas fa-shield-virus"></i>
+                                Threat Detection
+                            </span>
+                            <a href="#" class="card-action" onclick="showThreats()">View All</a>
+                        </div>
+                        <div class="threat-stats">
+                            <div class="threat-stat">
+                                <div class="threat-stat-icon blocked">
+                                    <i class="fas fa-shield-check"></i>
+                                </div>
+                                <div class="threat-stat-info">
+                                    <h4 id="threatsBlocked">247</h4>
+                                    <p>Threats Blocked</p>
+                                </div>
+                            <div class="threat-stat">
+                                <div class="threat-stat-icon suspicious">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </div>
+                                <div class="threat-stat-info">
+                                    <h4 id="suspiciousActivities">12</h4>
+                                    <p>Suspicious Activities</p>
+                                </div>
+                            <div class="threat-stat">
+                                <div class="threat-stat-icon quarantined">
+                                    <i class="fas fa-box-archive"></i>
+                                </div>
+                                <div class="threat-stat-info">
+                                    <h4 id="quarantinedFiles">5</h4>
+                                    <p>Quarantined Files</p>
+                                </div>
+                        </div>
+
+                    <!-- System Health -->
+                    <div class="card health-card">
+                        <div class="card-header">
+                            <span class="card-title">
+                                <i class="fas fa-server"></i>
+                                System Health
+                            </span>
+                        </div>
+                        <div class="health-score">
+                            <div class="score-gauge">
+                                <span class="score-value" id="securityScore">95</span>
+                            </div>
+                            <div class="score-label">Security Score</div>
+                        <div class="health-bars">
+                            <div class="health-bar-item">
+                                <div class="health-bar-header">
+                                    <span class="health-bar-label">CPU Usage</span>
+                                    <span class="health-bar-value" id="cpuUsage">45%</span>
+                                </div>
+                                <div class="health-bar"><div class="health-bar-fill cpu" id="cpuBar"></div>
+                            </div>
+                            <div class="health-bar-item">
+                                <div class="health-bar-header">
+                                    <span class="health-bar-label">RAM Usage</span>
+                                    <span class="health-bar-value" id="ramUsage">62%</span>
+                                </div>
+                                <div class="health-bar"><div class="health-bar-fill ram" id="ramBar"></div>
+                            </div>
+                            <div class="health-bar-item">
+                                <div class="health-bar-header">
+                                    <span class="health-bar-label">Disk Usage</span>
+                                    <span class="health-bar-value" id="diskUsage">38%</span>
+                                </div>
+                                <div class="health-bar"><div class="health-bar-fill disk" id="diskBar"></div>
+                            </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="card actions-card">
+                        <div class="card-header">
+                            <span class="card-title">
+                                <i class="fas fa-bolt"></i>
+                                Quick Actions
+                            </span>
+                        </div>
+                        <div class="quick-actions" id="quickActions">
+                            <button class="action-btn" id="quickScanBtn" onclick="runQuickScan()">
+                                <i class="fas fa-magnifying-glass"></i>
+                                <span>Quick Scan</span>
+                                <p>2-5 minutes</p>
+                            </button>
+                            <button class="action-btn" id="fullScanBtn" onclick="runFullScan()">
+                                <i class="fas fa-search"></i>
+                                <span>Full Scan</span>
+                                <p>30-60 minutes</p>
+                            </button>
+                            <button class="action-btn" id="updateBtn" onclick="updateDatabase()">
+                                <i class="fas fa-database"></i>
+                                <span>Update DB</span>
+                                <p>Latest definitions</p>
+                            </button>
+                            <button class="action-btn" id="reportsBtn" onclick="showReports()">
+                                <i class="fas fa-chart-pie"></i>
+                                <span>Reports</span>
+                                <p>View analytics</p>
+                            </button>
+                        </div>
+
+                    <!-- Recent Activity -->
+                    <div class="card activity-card">
+                        <div class="card-header">
+                            <span class="card-title">
+                                <i class="fas fa-clock-rotate-left"></i>
+                                Recent Activity
+                            </span>
+                            <a href="#" class="card-action" onclick="showAllActivity()">View All</a>
+                        </div>
+                        <div class="activity-list" id="activityList">
+                            <!-- Activity items will be populated by JavaScript -->
+                        </div>
+
+                    <!-- Security Analytics -->
+                    <div class="card analytics-card">
+                        <div class="card-header">
+                            <span class="card-title">
+                                <i class="fas fa-chart-column"></i>
+                                Security Analytics
+                            </span>
+                            <a href="#" class="card-action" onclick="showReports()">View Reports</a>
+                        </div>
+                        <div class="chart-container" id="chartContainer">
+                            <!-- Chart bars will be populated by JavaScript -->
+                        </div>
+                        <div class="chart-stats">
+                            <div class="chart-stat">
+                                <div class="chart-stat-value" style="color: var(--accent-green);" id="weeklyThreats">847</div>
+                                <div class="chart-stat-label">This Week</div>
+                            <div class="chart-stat">
+                                <div class="chart-stat-value" id="vsLastWeek">12%</div>
+                                <div class="chart-stat-label">vs Last Week</div>
+                            <div class="chart-stat">
+                                <div class="chart-stat-value" style="color: var(--accent-blue);" id="blockRate">99.2%</div>
+                                <div class="chart-stat-label">Block Rate</div>
+                        </div>
+
+                    <!-- Protected Items -->
+                    <div class="card protected-card">
+                        <div class="card-header">
+                            <span class="card-title">
+                                <i class="fas fa-folder-shield"></i>
+                                Protected Areas
+                            </span>
+                        </div>
+                        <div class="protected-items">
+                            <div class="protected-item">
+                                <div class="protected-item-icon">
+                                    <i class="fas fa-folder"></i>
+                                </div>
+                                <div class="protected-item-info">
+                                    <div class="protected-item-name">System Files</div>
+                                    <div class="protected-item-status">12,847 protected</div>
+                            </div>
+                            <div class="protected-item">
+                                <div class="protected-item-icon">
+                                    <i class="fas fa-file-lines"></i>
+                                </div>
+                                <div class="protected-item-info">
+                                    <div class="protected-item-name">Documents</div>
+                                    <div class="protected-item-status">2,341 protected</div>
+                            </div>
+                            <div class="protected-item">
+                                <div class="protected-item-icon">
+                                    <i class="fas fa-download"></i>
+                                </div>
+                                <div class="protected-item-info">
+                                    <div class="protected-item-name">Downloads</div>
+                                    <div class="protected-item-status">856 protected</div>
+                            </div>
+                    </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal for Scan Progress -->
+    <div class="modal-overlay" id="scanModal">
+        <div class="modal">
+            <h2 id="scanTitle">Quick Scan</h2>
+            <p id="scanDesc">Scanning your system for threats...</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+            <div class="progress-text" id="progressText">Scanning files...</div>
+            <div class="progress-percent" id="progressPercent">0%</div>
+            <button class="modal-close" id="modalCloseBtn" onclick="closeModal()">Cancel</button>
+        </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        // ============================================
+        // Application State
+        // ============================================
+        const state = {
+            threatsBlocked: 247,
+            suspiciousActivities: 12,
+            quarantinedFiles: 5,
+            securityScore: 95,
+            lastScanTime: '2 hours ago',
+            dbVersion: 'v2024.01.15',
+            cpuUsage: 45,
+            ramUsage: 62,
+            diskUsage: 38,
+            isScanning: false,
+            activities: [
+                { type: 'threat', title: 'Trojan Blocked', desc: 'C:\\Downloads\\setup.exe', time: '2h ago' },
+                { type: 'scan', title: 'Quick Scan Complete', desc: 'No threats found', time: '5h ago' },
+                { type: 'update', title: 'Database Updated', desc: 'Version 2024.01.15', time: 'Yesterday' },
+                { type: 'threat', title: 'Malware Quarantined', desc: 'C:\\Temp\\suspicious.dll', time: '2 days ago' }
+            ],
+            weeklyData: [30, 45, 25, 60, 40, 75, 35]
+        };
+
+        // ============================================
+        // Initialization
+        // ============================================
+        document.addEventListener('DOMContentLoaded', () => {
+            renderActivityList();
+            renderChart();
+            updateStats();
+            updateSystemHealth();
+            console.log('SecureGuard Dashboard initialized');
+        });
+
+        // ============================================
+        // Navigation
+        // ============================================
+        function navigateTo(page) {
+            showToast(`Navigating to ${page}...`, 'success');
+            console.log(`Navigating to: ${page}`);
+        }
+
+        // ============================================
+        // Quick Scan Function
+        // ============================================
+        function runQuickScan() {
+            if (state.isScanning) {
+                showToast('A scan is already in progress', 'warning');
+                return;
+            }
+
+            state.isScanning = true;
+            const btn = document.getElementById('quickScanBtn');
+            btn.classList.add('scanning');
+            btn.disabled = true;
+
+            addActivity('scan', 'Quick Scan Started', 'Initializing scan...');
+
+            showModal('Quick Scan', 'Scanning critical system areas...');
+
+            let progress = 0;
+            const scanAreas = [
+                'Scanning system files...',
+                'Checking startup programs...',
+                'Analyzing running processes...',
+                'Scanning registry...',
+                'Checking browser extensions...',
+                'Analyzing network connections...',
+                'Final verification...'
+            ];
+
+            const scanInterval = setInterval(() => {
+                progress += Math.random() * 15 + 5;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(scanInterval);
+                    completeQuickScan();
+                }
+                updateProgress(progress, scanAreas[Math.floor(progress / 15)] || 'Completing scan...');
+            }, 400);
+        }
+
+        function completeQuickScan() {
+            setTimeout(() => {
+                closeModal();
+                state.isScanning = false;
+                
+                const btn = document.getElementById('quickScanBtn');
+                btn.classList.remove('scanning');
+                btn.disabled = false;
+
+                // Simulate finding a threat occasionally
+                if (Math.random() > 0.7) {
+                    const newThreats = Math.floor(Math.random() * 3) + 1;
+                    state.threatsBlocked += newThreats;
+                    state.suspiciousActivities += Math.floor(Math.random() * 2);
+                    addActivity('threat', `${newThreats} Threat(s) Blocked`, 'Quick scan detected malware');
+                    showToast(`${newThreats} threat(s) detected and blocked!`, 'error');
+                } else {
+                    addActivity('scan', 'Quick Scan Complete', 'No threats found');
+                    showToast('Quick scan complete! Your system is clean.', 'success');
+                }
+
+                state.lastScanTime = 'Just now';
+                updateStats();
+            }, 500);
+        }
+
+        // ============================================
+        // Full Scan Function
+        // ============================================
+        function runFullScan() {
+            if (state.isScanning) {
+                showToast('A scan is already in progress', 'warning');
+                return;
+            }
+
+            state.isScanning = true;
+            const btn = document.getElementById('fullScanBtn');
+            btn.classList.add('scanning');
+            btn.disabled = true;
+
+            addActivity('scan', 'Full Scan Started', 'Scanning entire system...');
+
+            showModal('Full System Scan', 'This may take several minutes...');
+
+            let progress = 0;
+            const scanPhases = [
+                'Analyzing disk C:\\',
+                'Scanning user documents...',
+                'Checking system32 files...',
+                'Scanning program files...',
+                'Analyzing temp folders...',
+                'Checking downloads...',
+                'Scanning network drives...',
+                'Verifying system integrity...',
+                'Generating report...'
+            ];
+
+            const scanInterval = setInterval(() => {
+                progress += Math.random() * 8 + 2;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(scanInterval);
+                    completeFullScan();
+                }
+                const phaseIndex = Math.min(Math.floor(progress / 11), scanPhases.length - 1);
+                updateProgress(progress, scanPhases[phaseIndex]);
+            }, 300);
+        }
+
+        function completeFullScan() {
+            setTimeout(() => {
+                closeModal();
+                state.isScanning = false;
+                
+                const btn = document.getElementById('fullScanBtn');
+                btn.classList.remove('scanning');
+                btn.disabled = false;
+
+                const threatsFound = Math.floor(Math.random() * 5);
+                if (threatsFound > 0) {
+                    state.threatsBlocked += threatsFound;
+                    state.quarantinedFiles += threatsFound;
+                    addActivity('threat', `${threatsFound} Threats Found`, 'Full scan detected malware');
+                    showToast(`${threatsFound} threat(s) found and quarantined!`, 'warning');
+                } else {
+                    addActivity('scan', 'Full Scan Complete', 'System is clean');
+                    showToast('Full system scan complete! No threats found.', 'success');
+                }
+
+                state.lastScanTime = 'Just now';
+                updateStats();
+            }, 500);
+        }
+
+        // ============================================
+        // Update Database Function
+        // ============================================
+        function updateDatabase() {
+            const btn = document.getElementById('updateBtn');
+            btn.disabled = true;
+
+            addActivity('update', 'Updating Database', 'Connecting to update server...');
+
+            showModal('Updating Virus Database', 'Downloading latest definitions...');
+
+            let progress = 0;
+            const updateSteps = [
+                'Connecting to SecureGuard servers...',
+                'Checking for updates...',
+                'Downloading virus definitions...',
+                'Verifying update package...',
+                'Installing updates...'
+            ];
+
+            const updateInterval = setInterval(() => {
+                progress += Math.random() * 20 + 10;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(updateInterval);
+                    completeUpdate();
+                }
+                const stepIndex = Math.min(Math.floor(progress / 20), updateSteps.length - 1);
+                updateProgress(progress, updateSteps[stepIndex]);
+            }, 400);
+        }
+
+        function completeUpdate() {
+            setTimeout(() => {
+                closeModal();
+                const btn = document.getElementById('updateBtn');
+                btn.disabled = false;
+
+                // Update version
+                const now = new Date();
+                state.dbVersion = `v${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`;
+                
+                addActivity('update', 'Database Updated', state.dbVersion);
+                showToast('Virus database updated successfully!', 'success');
+                updateStats();
+            }, 500);
+        }
+
+        // ============================================
+        // Modal Functions
+        // ============================================
+        function showModal(title, desc) {
+            document.getElementById('scanTitle').textContent = title;
+            document.getElementById('scanDesc').textContent = desc;
+            document.getElementById('progressFill').style.width = '0%';
+            document.getElementById('progressPercent').textContent = '0%';
+            document.getElementById('scanModal').classList.add('active');
+        }
+
+        function updateProgress(percent, text) {
+            document.getElementById('progressFill').style.width = percent + '%';
+            document.getElementById('progressPercent').textContent = Math.floor(percent) + '%';
+            document.getElementById('progressText').textContent = text;
+        }
+
+        function closeModal() {
+            document.getElementById('scanModal').classList.remove('active');
+        }
+
+        // ============================================
+        // Toast Notifications
+        // ============================================
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            const icons = {
+                success: 'fa-check-circle',
+                warning: 'fa-exclamation-triangle',
+                error: 'fa-times-circle'
+            };
+            
+            toast.innerHTML = `
+                <i class="fas ${icons[type]}"></i>
+                <span class="toast-message">${message}</span>
+            `;
+            
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        // ============================================
+        // Activity Log
+        // ============================================
+        function addActivity(type, title, desc) {
+            const now = new Date();
+            const timeAgo = 'Just now';
+            
+            state.activities.unshift({ type, title, desc, time: timeAgo });
+            if (state.activities.length > 20) state.activities.pop();
+            
+            renderActivityList();
+        }
+
+        function renderActivityList() {
+            const list = document.getElementById('activityList');
+            list.innerHTML = state.activities.map(activity => `
+                <div class="activity-item">
+                    <div class="activity-icon ${activity.type}">
+                        <i class="fas ${getActivityIcon(activity.type)}"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-title">${activity.title}</div>
+                        <div class="activity-desc">${activity.desc}</div>
+                    <div class="activity-time">${activity.time}</div>
+            `).join('');
+        }
+
+        function getActivityIcon(type) {
+            const icons = {
+                threat: 'fa-shield-virus',
+                scan: 'fa-check',
+                update: 'fa-download'
+            };
+            return icons[type] || 'fa-info';
+        }
+
+        function showAllActivity() {
+            showToast('Showing all activity log...', 'success');
+        }
+
+        // ============================================
+        // Chart
+        // ============================================
+        function renderChart() {
+            const container = document.getElementById('chartContainer');
+            const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            const maxValue = Math.max(...state.weeklyData);
+
+            container.innerHTML = state.weeklyData.map((value, index) => `
+                <div class="chart-bar">
+                    <div class="chart-bar-fill" style="height: ${(value / maxValue) * 100}%;"></div>
+                    <span class="chart-bar-label">${days[index]}</span>
+                </div>
+            `).join('');
+        }
+
+        // ============================================
+        // Stats Update
+        // ============================================
+        function updateStats() {
+            document.getElementById('threatsBlocked').textContent = state.threatsBlocked.toLocaleString();
+            document.getElementById('suspiciousActivities').textContent = state.suspiciousActivities;
+            document.getElementById('quarantinedFiles').textContent = state.quarantinedFiles;
+            document.getElementById('securityScore').textContent = state.securityScore;
+            document.getElementById('lastScanTime').textContent = state.lastScanTime;
+            document.getElementById('dbVersion').textContent = state.dbVersion;
+            document.getElementById('threatBadge').textContent = state.suspiciousActivities;
+            document.getElementById('weeklyThreats').textContent = state.weeklyData.reduce((a, b) => a + b, 0);
+        }
+
+        function updateSystemHealth() {
+            // Simulate real-time system health updates
+            setInterval(() => {
+                state.cpuUsage = Math.floor(Math.random() * 30) + 30;
+                state.ramUsage = Math.floor(Math.random() * 20) + 50;
+                state.diskUsage = Math.floor(Math.random() * 15) + 30;
+
+                document.getElementById('cpuUsage').textContent = state.cpuUsage + '%';
+                document.getElementById('ramUsage').textContent = state.ramUsage + '%';
+                document.getElementById('diskUsage').textContent = state.diskUsage + '%';
+                document.getElementById('cpuBar').style.width = state.cpuUsage + '%';
+                document.getElementById('ramBar').style.width = state.ramUsage + '%';
+                document.getElementById('diskBar').style.width = state.diskUsage + '%';
+            }, 5000);
+        }
+
+        // ============================================
+        // Feature Functions
+        // ============================================
+        function showThreats() {
+            showToast(`Showing ${state.suspiciousActivities} threats...`, 'warning');
+        }
+
+        function showQuarantine() {
+            showToast(`Showing ${state.quarantinedFiles} quarantined files...`, 'success');
+        }
+
+        function showReports() {
+            showToast('Opening security reports...', 'success');
+        }
+
+        function showSettings() {
+            showToast('Opening settings...', 'success');
+        }
+
+        function showHelp() {
+            showToast('Opening help center...', 'success');
+        }
+
+        function showNotifications() {
+            showToast('You have 3 new notifications', 'success');
+        }
+
+        function showMessages() {
+            showToast('You have no new messages', 'success');
+        }
+
+        function viewProtectionDetails() {
+            showToast('Showing protection details...', 'success');
+        }
+
+        function upgradeToPro() {
+            showToast('Redirecting to upgrade page...', 'success');
+        }
+
+        console.log('SecureGuard Dashboard - All functions loaded successfully');
+    </script>
+</body>
+</html>

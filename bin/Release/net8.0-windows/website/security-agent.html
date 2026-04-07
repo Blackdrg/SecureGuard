@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Agent - SecureGuard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg-primary: #090c14;
+            --bg-secondary: #0f131c;
+            --bg-tertiary: #161d2b;
+            --bg-card: #1a2332;
+            --border-color: #2a3545;
+            --accent-primary: #00d4aa;
+            --accent-blue: #3b82f6;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; }
+        
+        .header { background: rgba(15, 19, 28, 0.9); padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border-color); }
+        .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .logo-icon { width: 40px; height: 40px; background: linear-gradient(135deg, var(--accent-primary), #00a88a); border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+        .logo-text { font-size: 1.3rem; font-weight: 700; color: white; }
+        .logo-text span { color: var(--accent-primary); }
+        .nav-links { display: flex; gap: 32px; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; font-weight: 500; }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent-primary); }
+        
+        .main { max-width: 1000px; margin: 0 auto; padding: 40px 32px; }
+        
+        .page-header { text-align: center; margin-bottom: 32px; }
+        .page-title { font-size: 2rem; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 12px; }
+        .page-title i { color: var(--accent-primary); }
+        .page-subtitle { color: var(--text-secondary); }
+        
+        .capabilities { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+        .capability { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; text-align: center; transition: all 0.2s; }
+        .capability:hover { border-color: var(--accent-primary); transform: translateY(-2px); }
+        .capability-icon { width: 48px; height: 48px; border-radius: 12px; background: rgba(0, 212, 170, 0.15); color: var(--accent-primary); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 20px; }
+        .capability-name { font-weight: 600; font-size: 0.9rem; }
+        
+        .chat-container { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; overflow: hidden; height: 500px; display: flex; flex-direction: column; }
+        .chat-header { padding: 20px; background: var(--bg-tertiary); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 12px; }
+        .agent-avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-primary), var(--accent-blue)); display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .agent-info h3 { font-size: 1rem; font-weight: 600; }
+        .agent-info p { font-size: 0.8rem; color: var(--text-secondary); }
+        .agent-status { margin-left: auto; display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: var(--accent-primary); }
+        .status-dot { width: 8px; height: 8px; background: var(--accent-primary); border-radius: 50%; }
+        
+        .chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
+        
+        .message { max-width: 80%; padding: 14px 18px; border-radius: 16px; font-size: 0.95rem; line-height: 1.5; }
+        .message.agent { background: var(--bg-tertiary); align-self: flex-start; border-bottom-left-radius: 4px; }
+        .message.user { background: var(--accent-primary); color: #000; align-self: flex-end; border-bottom-right-radius: 4px; }
+        
+        .quick-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+        .quick-btn { padding: 8px 14px; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 20px; font-size: 0.85rem; color: var(--text-secondary); cursor: pointer; transition: all 0.2s; }
+        .quick-btn:hover { border-color: var(--accent-primary); color: var(--accent-primary); }
+        
+        .chat-input { padding: 16px 20px; background: var(--bg-tertiary); border-top: 1px solid var(--border-color); display: flex; gap: 12px; }
+        .chat-input input { flex: 1; padding: 14px 18px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; color: var(--text-primary); font-size: 0.95rem; outline: none; }
+        .chat-input input:focus { border-color: var(--accent-primary); }
+        .send-btn { padding: 14px 24px; background: var(--accent-primary); border: none; border-radius: 12px; color: #000; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+        .send-btn:hover { background: #00f5c4; }
+        
+        @media (max-width: 768px) {
+            .capabilities { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <a href="index.html" class="logo">
+            <div class="logo-icon"><i class="fas fa-shield-halved"></i></div>
+            <div class="logo-text">Secure<span>Guard</span></div>
+        </a>
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="features.html">Features</a>
+            <a href="pricing.html">Pricing</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="admin.html">Admin</a>
+            <a href="risk-score.html">Risk Score</a>
+            <a href="threat-radar.html">Threat Radar</a>
+            <a href="attack-prediction.html">Attack Prediction</a>
+            <a href="digital-identity.html">Digital Identity</a>
+            <a href="advanced-features.html">AI Features</a>
+            <a href="security-agent.html" class="active">AI Agent</a>
+        </nav>
+    </header>
+
+    <main class="main">
+        <div class="page-header">
+            <h1 class="page-title"><i class="fas fa-robot"></i> Security Assistant</h1>
+            <p class="page-subtitle">Your personal cybersecurity advisor</p>
+        </div>
+        
+        <div class="capabilities">
+            <div class="capability">
+                <div class="capability-icon"><i class="fas fa-bug"></i></div>
+                <div class="capability-name">Threat Explanation</div>
+            </div>
+            <div class="capability">
+                <div class="capability-icon"><i class="fas fa-wrench"></i></div>
+                <div class="capability-name">Quick Fixes</div>
+            </div>
+            <div class="capability">
+                <div class="capability-icon"><i class="fas fa-rocket"></i></div>
+                <div class="capability-name">Optimization</div>
+            </div>
+            <div class="capability">
+                <div class="capability-icon"><i class="fas fa-question-circle"></i></div>
+                <div class="capability-name">Q&A</div>
+            </div>
+        </div>
+        
+        <div class="chat-container">
+            <div class="chat-header">
+                <div class="agent-avatar"><i class="fas fa-robot"></i></div>
+                <div class="agent-info">
+                    <h3>SecureGuard Assistant</h3>
+                    <p>AI-Powered Security Advisor</p>
+                </div>
+                <div class="agent-status"><div class="status-dot"></div> Online</div>
+            </div>
+            
+            <div class="chat-messages" id="chatMessages">
+                <div class="message agent">
+                    Hello! I'm your SecureGuard Security Assistant. I can help you with:
+                    <ul>
+                        <li>🔍 Explaining threats and malware</li>
+                        <li>🛠 Providing quick fixes for issues</li>
+                        <li>⚡ Security optimization tips</li>
+                        <li>❓ Answering security questions</li>
+                    </ul>
+                    What would you like to know about?
+                </div>
+            </div>
+            
+            <div class="chat-input">
+                <input type="text" id="queryInput" placeholder="Ask me about security..." onkeypress="handleKeyPress(event)">
+                <button class="send-btn" onclick="sendQuery()"><i class="fas fa-paper-plane"></i> Ask</button>
+            </div>
+        </div>
+        
+        <div style="margin-top: 16px; text-align: center;">
+            <p style="color: var(--text-secondary); margin-bottom: 12px;">Quick questions:</p>
+            <div class="quick-actions" style="justify-content: center;">
+                <button class="quick-btn" onclick="sendQuickQuery('What is ransomware?')">What is ransomware?</button>
+                <button class="quick-btn" onclick="sendQuickQuery('How to speed up my computer')">Speed up computer</button>
+                <button class="quick-btn" onclick="sendQuickQuery('How to protect my passwords')">Password protection</button>
+                <button class="quick-btn" onclick="sendQuickQuery('What is phishing?')">What is phishing?</button>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/api.js"></script>
+    <script>
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') sendQuery();
+        }
+        
+        function sendQuickQuery(query) {
+            document.getElementById('queryInput').value = query;
+            sendQuery();
+        }
+        
+        async function sendQuery() {
+            const input = document.getElementById('queryInput');
+            const query = input.value.trim();
+            if (!query) return;
+            
+            // Add user message
+            addMessage(query, 'user');
+            input.value = '';
+            
+            // Show typing indicator
+            const typingMsg = addMessage('<i class="fas fa-ellipsis-h"></i> Thinking...', 'agent');
+            
+            try {
+                const response = await secureGuardAPI.askAssistant(query);
+                if (response && response.response) {
+                    typingMsg.remove();
+                    addMessage(response.response, 'agent');
+                }
+            } catch(e) {
+                typingMsg.remove();
+                addMessage("I understand you're asking about: '" + query + "'. Try asking about specific threats like 'ransomware', 'phishing', or 'trojan'.", 'agent');
+            }
+        }
+        
+        function addMessage(text, sender) {
+            const messages = document.getElementById('chatMessages');
+            const div = document.createElement('div');
+            div.className = 'message ' + sender;
+            div.innerHTML = text;
+            messages.appendChild(div);
+            messages.scrollTop = messages.scrollHeight;
+            return div;
+        }
+    </script>
+</body>
+</html>
+

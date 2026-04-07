@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Monitor - SecureGuard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0ea5e9;
+            --primary-dark: #0284c7;
+            --secondary: #10b981;
+            --secondary-dark: #059669;
+            --accent: #8b5cf6;
+            --dark: #0f172a;
+            --dark-2: #1e293b;
+            --dark-3: #334155;
+            --dark-card: #162033;
+            --dark-card-hover: #1e2d42;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border-subtle: rgba(255,255,255,0.05);
+            --border-light: rgba(255,255,255,0.1);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --shadow-glow: 0 0 30px rgba(14, 165, 233, 0.2);
+            --shadow-lg: 0 10px 40px rgba(0,0,0,0.5);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+        .bg-gradient {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: -1;
+            background: 
+                radial-gradient(ellipse 100% 80% at 20% 0%, rgba(14, 165, 233, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse 80% 60% at 80% 100%, rgba(16, 185, 129, 0.06) 0%, transparent 50%);
+        }
+        .app-container { display: flex; min-height: 100vh; }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 270px;
+            background: rgba(15, 23, 42, 0.95);
+            border-right: 1px solid var(--border-subtle);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
+        }
+        .sidebar-header { padding: 24px; border-bottom: 1px solid var(--border-subtle); }
+        .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .logo-icon {
+            width: 44px; height: 44px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: var(--radius-md);
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+        }
+        .logo-icon i { font-size: 22px; color: white; }
+        .logo-text { font-size: 1.4rem; font-weight: 700; color: var(--text-primary); }
+        .logo-text span {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .sidebar-nav { flex: 1; padding: 16px; overflow-y: auto; }
+        .nav-section { margin-bottom: 24px; }
+        .nav-section-title {
+            font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 1px; color: var(--text-muted); padding: 8px 16px; margin-bottom: 4px;
+        }
+        .nav-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 16px; border-radius: var(--radius-md);
+            color: var(--text-secondary); text-decoration: none;
+            font-weight: 500; font-size: 0.9rem;
+            transition: all 0.15s ease; margin-bottom: 4px;
+            cursor: pointer; border: none; background: transparent;
+            width: 100%; text-align: left; position: relative;
+        }
+        .nav-item::before {
+            content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+            width: 3px; background: linear-gradient(180deg, var(--primary), var(--secondary));
+            transform: scaleY(0); transition: transform 0.15s ease;
+        }
+        .nav-item:hover {
+            background: rgba(255,255,255,0.03); color: var(--text-primary);
+            transform: translateX(4px);
+        }
+        .nav-item.active {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.15), rgba(16, 185, 129, 0.1));
+            color: var(--primary); border: 1px solid rgba(14, 165, 233, 0.2);
+        }
+        .nav-item.active::before { transform: scaleY(1); }
+        .nav-item i { font-size: 18px; width: 24px; text-align: center; }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1; margin-left: 270px;
+            display: flex; flex-direction: column; min-height: 100vh;
+        }
+        .top-header {
+            background: rgba(15, 23, 42, 0.8);
+            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 16px 32px;
+            display: flex; align-items: center; justify-content: space-between;
+            position: sticky; top: 0; z-index: 50;
+        }
+        .page-title { font-size: 1.3rem; font-weight: 600; display: flex; align-items: center; gap: 12px; }
+        .page-title i {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .header-right { display: flex; align-items: center; gap: 16px; }
+        .header-btn {
+            width: 42px; height: 42px; border-radius: var(--radius-md);
+            background: var(--dark-card); border: 1px solid var(--border-subtle);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.15s ease; position: relative; color: var(--text-secondary);
+        }
+        .header-btn:hover {
+            background: var(--dark-card-hover); color: var(--primary);
+            border-color: var(--primary); transform: translateY(-2px);
+        }
+        .user-menu {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, var(--dark-card), rgba(22, 32, 51, 0.8));
+            border-radius: var(--radius-md); display: flex; align-items: center; gap: 10px;
+            border: 1px solid var(--border-subtle); cursor: pointer;
+        }
+        .user-avatar {
+            width: 32px; height: 32px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center;
+            font-weight: 600; font-size: 0.85rem;
+        }
+        .user-info { display: flex; flex-direction: column; }
+        .user-name { font-weight: 600; font-size: 0.85rem; }
+        .user-status { font-size: 0.7rem; color: var(--secondary); display: flex; align-items: center; gap: 4px; }
+        .user-status::before {
+            content: ''; width: 6px; height: 6px; background: var(--secondary);
+            border-radius: 50%; animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+        
+        /* Dashboard Content */
+        .dashboard-content { padding: 32px; flex: 1; }
+        .dashboard-grid {
+            display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px;
+        }
+        .card {
+            background: linear-gradient(145deg, rgba(22, 32, 51, 0.9), rgba(15, 23, 42, 0.8));
+            border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 24px;
+            transition: all 0.25s ease; position: relative; overflow: hidden;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
+        .card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+        }
+        .card:hover {
+            border-color: rgba(14, 165, 233, 0.3);
+            transform: translateY(-4px); box-shadow: var(--shadow-lg), var(--shadow-glow);
+        }
+        
+        /* Stats */
+        .stat-card { grid-column: span 3; text-align: center; }
+        .stat-icon {
+            width: 56px; height: 56px; margin: 0 auto 16px;
+            border-radius: var(--radius-md); display: flex;
+            align-items: center; justify-content: center;
+        }
+        .stat-icon.connections {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(59, 130, 246, 0.1));
+        }
+        .stat-icon.download {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(14, 165, 233, 0.1));
+        }
+        .stat-icon.upload {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(59, 130, 246, 0.1));
+        }
+        .stat-icon.blocked {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(245, 158, 11, 0.1));
+        }
+        .stat-icon i { font-size: 24px; }
+        .stat-icon.connections i { color: var(--primary); }
+        .stat-icon.download i { color: var(--secondary); }
+        .stat-icon.upload i { color: var(--accent); }
+        .stat-icon.blocked i { color: var(--danger); }
+        .stat-value { font-size: 2rem; font-weight: 700; }
+        .stat-label { font-size: 0.85rem; color: var(--text-secondary); margin-top: 4px; }
+        
+        /* Network Chart */
+        .chart-card { grid-column: span 8; }
+        .chart-container {
+            height: 250px; margin-top: 16px;
+            position: relative;
+        }
+        .chart-canvas {
+            width: 100%; height: 100%;
+        }
+        
+        /* Bandwidth Card */
+        .bandwidth-card { grid-column: span 4; }
+        .bandwidth-item {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 16px 0; border-bottom: 1px solid var(--border-subtle);
+        }
+        .bandwidth-item:last-child { border-bottom: none; }
+        .bandwidth-info { display: flex; align-items: center; gap: 12px; }
+        .bandwidth-icon {
+            width: 40px; height: 40px; border-radius: var(--radius-sm);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .bandwidth-icon i { font-size: 18px; }
+        .bandwidth-icon.download { background: rgba(16, 185, 129, 0.1); }
+        .bandwidth-icon.download i { color: var(--secondary); }
+        .bandwidth-icon.upload { background: rgba(14, 165, 233, 0.1); }
+        .bandwidth-icon.upload i { color: var(--primary); }
+        .bandwidth-label { font-weight: 600; }
+        .bandwidth-value { font-size: 1.2rem; font-weight: 700; color: var(--primary); }
+        
+        /* Connection Table */
+        .connections-card { grid-column: span 12; }
+        .table-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 16px;
+        }
+.filter-group { display: flex; gap: 8px; }
+        .filter-btn {
+            background: var(--dark-card); border: 1px solid var(--border-subtle);
+            color: var(--text-secondary); font-size: 0.8rem;
+            cursor: pointer; transition: all 0.15s ease;
+        }
+        .filter-btn.active {
+            background: var(--primary); border-color: var(--primary); color: white;
+        }
+        .connections-table { width: 100%; border-collapse: collapse; }
+        .connections-table th {
+            text-align: left; padding: 12px 16px;
+            font-size: 0.75rem; font-weight: 600;
+            color: var(--text-muted); text-transform: uppercase;
+            letter-spacing: 0.5px; border-bottom: 1px solid var(--border-subtle);
+        }
+        .connections-table td {
+            padding: 14px 16px; font-size: 0.9rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .connections-table tr:hover td { background: var(--dark-card); }
+        .protocol-badge {
+            padding: 4px 8px; border-radius: 4px;
+            font-size: 0.7rem; font-weight: 600;
+            text-transform: uppercase;
+        }
+        .protocol-badge.tcp { background: rgba(14, 165, 233, 0.2); color: var(--primary); }
+        .protocol-badge.udp { background: rgba(139, 92, 246, 0.2); color: var(--accent); }
+        .protocol-badge.http { background: rgba(16, 185, 129, 0.2); color: var(--secondary); }
+        .protocol-badge.https { background: rgba(16, 185, 129, 0.2); color: var(--secondary); }
+        .status-badge {
+            padding: 4px 10px; border-radius: 20px;
+            font-size: 0.75rem; font-weight: 600;
+        }
+        .status-badge.allowed {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.1));
+            color: var(--secondary);
+        }
+        .status-badge.blocked {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.1));
+            color: var(--danger);
+        }
+        
+        /* Process List */
+        .process-card { grid-column: span 6; }
+        .process-list { max-height: 400px; overflow-y: auto; margin-top: 16px; }
+        .process-list::-webkit-scrollbar { width: 6px; }
+        .process-list::-webkit-scrollbar-track { background: var(--dark-3); }
+        .process-list::-webkit-scrollbar-thumb { background: var(--dark-card); border-radius: 3px; }
+        .process-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px; background: var(--dark-card); border-radius: var(--radius-md);
+            margin-bottom: 8px;
+        }
+        .process-icon {
+            width: 36px; height: 36px; border-radius: var(--radius-sm);
+            background: var(--dark-3); display: flex;
+            align-items: center; justify-content: center;
+        }
+        .process-icon i { color: var(--text-secondary); }
+        .process-info { flex: 1; }
+        .process-name { font-weight: 600; font-size: 0.9rem; }
+        .process-path { font-size: 0.75rem; color: var(--text-muted); }
+        .process-stats { text-align: right; }
+        .process-cpu { font-weight: 600; color: var(--primary); }
+        .process-mem { font-size: 0.8rem; color: var(--text-secondary); }
+        
+        /* DNS Card */
+        .dns-card { grid-column: span 6; }
+        .dns-list { max-height: 400px; overflow-y: auto; margin-top: 16px; }
+        .dns-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px; background: var(--dark-card); border-radius: var(--radius-md);
+            margin-bottom: 8px;
+        }
+        .dns-icon {
+            width: 36px; height: 36px; border-radius: var(--radius-sm);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .dns-icon.allowed { background: rgba(16, 185, 129, 0.1); }
+        .dns-icon.blocked { background: rgba(239, 68, 68, 0.1); }
+        .dns-icon i { font-size: 16px; }
+        .dns-icon.allowed i { color: var(--secondary); }
+        .dns-icon.blocked i { color: var(--danger); }
+        .dns-info { flex: 1; }
+        .dns-domain { font-weight: 600; font-size: 0.9rem; }
+        .dns-ip { font-size: 0.75rem; color: var(--text-muted); }
+        .dns-time { font-size: 0.75rem; color: var(--text-muted); }
+        
+        /* Live Indicator */
+        .live-indicator {
+            display: flex; align-items: center; gap: 8px;
+            padding: 6px 12px; background: rgba(16, 185, 129, 0.1);
+            border-radius: 20px;
+        }
+        .live-dot {
+            width: 8px; height: 8px; background: var(--secondary);
+            border-radius: 50%; animation: livePulse 1.5s infinite;
+        }
+        @keyframes livePulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        .live-indicator span { font-size: 0.8rem; color: var(--secondary); font-weight: 600; }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .stat-card { grid-column: span 6; }
+            .chart-card { grid-column: span 12; }
+            .bandwidth-card { grid-column: span 12; }
+            .process-card { grid-column: span 12; }
+            .dns-card { grid-column: span 12; }
+        }
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .main-content { margin-left: 0; }
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .stat-card { grid-column: span 12; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-gradient"></div>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="dashboard.html" class="logo">
+                    <div class="logo-icon"><i class="fas fa-shield-alt"></i></div>
+                    <div class="logo-text">Secure<span>Guard</span></div>
+                </a>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Main</div>
+                    <a href="dashboard.html" class="nav-item"><i class="fas fa-th-large"></i>Dashboard</a>
+                    <a href="scan-center.html" class="nav-item"><i class="fas fa-search"></i>Scan Center</a>
+                    <a href="threat-intelligence.html" class="nav-item"><i class="fas fa-brain"></i>Threat Intel</a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Monitoring</div>
+                    <a href="network-monitor.html" class="nav-item active"><i class="fas fa-network-wired"></i>Network</a>
+                    <a href="system-health.html" class="nav-item"><i class="fas fa-heartbeat"></i>System Health</a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Account</div>
+                    <a href="profile.html" class="nav-item"><i class="fas fa-user"></i>Profile</a>
+                    <a href="settings.html" class="nav-item"><i class="fas fa-cog"></i>Settings</a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Admin</div>
+                    <a href="admin.html" class="nav-item"><i class="fas fa-user-shield"></i>Admin Panel</a>
+                </div>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <h1 class="page-title"><i class="fas fa-network-wired"></i>Network Monitor</h1>
+                <div class="header-right">
+                    <div class="live-indicator">
+                        <div class="live-dot"></div>
+                        <span>LIVE</span>
+                    </div>
+                    <button class="header-btn" title="Export"><i class="fas fa-download"></i></button>
+                    <button class="header-btn" title="Settings"><i class="fas fa-cog"></i></button>
+                    <div class="user-menu">
+                        <div class="user-avatar">JD</div>
+                        <div class="user-info">
+                            <div class="user-name">John Doe</div>
+                            <div class="user-status">Protected</div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <div class="dashboard-content">
+                <div class="dashboard-grid">
+                    <!-- Stats -->
+                    <div class="card stat-card">
+                        <div class="stat-icon connections"><i class="fas fa-link"></i></div>
+                        <div class="stat-value">247</div>
+                        <div class="stat-label">Active Connections</div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-icon download"><i class="fas fa-download"></i></div>
+                        <div class="stat-value">1.2 GB</div>
+                        <div class="stat-label">Downloaded (24h)</div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-icon upload"><i class="fas fa-upload"></i></div>
+                        <div class="stat-value">342 MB</div>
+                        <div class="stat-label">Uploaded (24h)</div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-icon blocked"><i class="fas fa-ban"></i></div>
+                        <div class="stat-value">18</div>
+                        <div class="stat-label">Blocked Threats</div>
+                    </div>
+                    
+                    <!-- Bandwidth -->
+                    <div class="card bandwidth-card">
+                        <h3><i class="fas fa-tachometer-alt"></i> Bandwidth Usage</h3>
+                        <div class="bandwidth-item">
+                            <div class="bandwidth-info">
+                                <div class="bandwidth-icon download"><i class="fas fa-arrow-down"></i></div>
+                                <div class="bandwidth-label">Download Speed</div>
+                            </div>
+                            <div class="bandwidth-value">45.2 MB/s</div>
+                        </div>
+                        <div class="bandwidth-item">
+                            <div class="bandwidth-info">
+                                <div class="bandwidth-icon upload"><i class="fas fa-arrow-up"></i></div>
+                                <div class="bandwidth-label">Upload Speed</div>
+                            </div>
+                            <div class="bandwidth-value">12.8 MB/s</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Network Chart -->
+                    <div class="card chart-card">
+                        <div class="table-header">
+                            <h3><i class="fas fa-chart-line"></i> Network Traffic</h3>
+                            <div class="filter-group">
+                                <button class="filter-btn active">Live</button>
+                                <button class="filter-btn">1 Hour</button>
+                                <button class="filter-btn">24 Hours</button>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="networkChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Connection Table -->
+                    <div class="card connections-card">
+                        <div class="table-header">
+                            <h3><i class="fas fa-plug"></i> Active Connections</h3>
+                            <div class="filter-group">
+                                <button class="filter-btn active">All</button>
+                                <button class="filter-btn">Allowed</button>
+                                <button class="filter-btn">Blocked</button>
+                            </div>
+                        </div>
+                        <table class="connections-table">
+                            <thead>
+                                <tr>
+                                    <th>Process</th>
+                                    <th>Protocol</th>
+                                    <th>Source</th>
+                                    <th>Destination</th>
+                                    <th>Port</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><i class="fas fa-browser"></i> chrome.exe</td>
+                                    <td><span class="protocol-badge https">HTTPS</span></td>
+                                    <td>192.168.1.100</td>
+                                    <td>142.250.185.78</td>
+                                    <td>443</td>
+                                    <td><span class="status-badge allowed">Allowed</span></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fas fa-code"></i> code.exe</td>
+                                    <td><span class="protocol-badge http">HTTP</span></td>
+                                    <td>192.168.1.100</td>
+                                    <td>13.107.42.14</td>
+                                    <td>443</td>
+                                    <td><span class="status-badge allowed">Allowed</span></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fas fa-envelope"></i> outlook.exe</td>
+                                    <td><span class="protocol-badge tcp">TCP</span></td>
+                                    <td>192.168.1.100</td>
+                                    <td>40.107.6.121</td>
+                                    <td>995</td>
+                                    <td><span class="status-badge allowed">Allowed</span></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fas fa-gamepad"></i> spotify.exe</td>
+                                    <td><span class="protocol-badge tcp">TCP</span></td>
+                                    <td>192.168.1.100</td>
+                                    <td>35.186.224.25</td>
+                                    <td>443</td>
+                                    <td><span class="status-badge allowed">Allowed</span></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fas fa-bug"></i> malware.exe</td>
+                                    <td><span class="protocol-badge tcp">TCP</span></td>
+                                    <td>192.168.1.100</td>
+                                    <td>185.234.72.15</td>
+                                    <td>4444</td>
+                                    <td><span class="status-badge blocked">Blocked</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Process List -->
+                    <div class="card process-card">
+                        <h3><i class="fas fa-microchip"></i> Network Processes</h3>
+                        <div class="process-list">
+                            <div class="process-item">
+                                <div class="process-icon"><i class="fas fa-browser"></i></div>
+                                <div class="process-info">
+                                    <div class="process-name">Google Chrome</div>
+                                    <div class="process-path">C:\Program Files\Google\Chrome\Application\chrome.exe</div>
+                                </div>
+                                <div class="process-stats">
+                                    <div class="process-cpu">8.2%</div>
+                                    <div class="process-mem">1.2 GB</div>
+                                </div>
+                            </div>
+                            <div class="process-item">
+                                <div class="process-icon"><i class="fas fa-code"></i></div>
+                                <div class="process-info">
+                                    <div class="process-name">Visual Studio Code</div>
+                                    <div class="process-path">C:\Users\John\AppData\Local\Programs\Microsoft VS Code\Code.exe</div>
+                                </div>
+                                <div class="process-stats">
+                                    <div class="process-cpu">3.1%</div>
+                                    <div class="process-mem">524 MB</div>
+                                </div>
+                            </div>
+                            <div class="process-item">
+                                <div class="process-icon"><i class="fas fa-cloud"></i></div>
+                                <div class="process-info">
+                                    <div class="process-name">OneDrive</div>
+                                    <div class="process-path">C:\Users\John\AppData\Local\Microsoft\OneDrive\OneDrive.exe</div>
+                                </div>
+                                <div class="process-stats">
+                                    <div class="process-cpu">1.5%</div>
+                                    <div class="process-mem">128 MB</div>
+                                </div>
+                            </div>
+                            <div class="process-item">
+                                <div class="process-icon"><i class="fas fa-envelope"></i></div>
+                                <div class="process-info">
+                                    <div class="process-name">Microsoft Outlook</div>
+                                    <div class="process-path">C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE</div>
+                                </div>
+                                <div class="process-stats">
+                                    <div class="process-cpu">0.8%</div>
+                                    <div class="process-mem">256 MB</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- DNS Queries -->
+                    <div class="card dns-card">
+                        <h3><i class="fas fa-dns"></i> DNS Queries</h3>
+                        <div class="dns-list">
+                            <div class="dns-item">
+                                <div class="dns-icon allowed"><i class="fas fa-check"></i></div>
+                                <div class="dns-info">
+                                    <div class="dns-domain">www.google.com</div>
+                                    <div class="dns-ip">142.250.185.78</div>
+                                </div>
+                                <div class="dns-time">2s ago</div>
+                            </div>
+                            <div class="dns-item">
+                                <div class="dns-icon allowed"><i class="fas fa-check"></i></div>
+                                <div class="dns-info">
+                                    <div class="dns-domain">github.com</div>
+                                    <div class="dns-ip">140.82.121.3</div>
+                                </div>
+                                <div class="dns-time">5s ago</div>
+                            </div>
+                            <div class="dns-item">
+                                <div class="dns-icon blocked"><i class="fas fa-ban"></i></div>
+                                <div class="dns-info">
+                                    <div class="dns-domain">malicious-site.com</div>
+                                    <div class="dns-ip">BLOCKED</div>
+                                </div>
+                                <div class="dns-time">12s ago</div>
+                            </div>
+                            <div class="dns-item">
+                                <div class="dns-icon allowed"><i class="fas fa-check"></i></div>
+                                <div class="dns-info">
+                                    <div class="dns-domain">api.openai.com</div>
+                                    <div class="dns-ip">104.244.42.193</div>
+                                </div>
+                                <div class="dns-time">18s ago</div>
+                            </div>
+                            <div class="dns-item">
+                                <div class="dns-icon allowed"><i class="fas fa-check"></i></div>
+                                <div class="dns-info">
+                                    <div class="dns-domain">cdn.jsdelivr.net</div>
+                                    <div class="dns-ip">172.217.14.241</div>
+                                </div>
+                                <div class="dns-time">25s ago</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script>
+        // Simple chart simulation
+        const canvas = document.getElementById('networkChart');
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            const width = canvas.parentElement.offsetWidth;
+            const height = 250;
+            canvas.width = width;
+            canvas.height = height;
+            
+            function drawChart() {
+                ctx.clearRect(0, 0, width, height);
+                
+                // Draw grid lines
+                ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+                ctx.lineWidth = 1;
+                for (let i = 0; i < 5; i++) {
+                    const y = (height / 5) * i;
+                    ctx.beginPath();
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(width, y);
+                    ctx.stroke();
+                }
+                
+                // Draw download line
+                ctx.beginPath();
+                ctx.strokeStyle = '#10b981';
+                ctx.lineWidth = 2;
+                let x = 0;
+                const points = 50;
+                const downloadData = [];
+                for (let i = 0; i < points; i++) {
+                    downloadData.push(Math.random() * 60 + 20);
+                }
+                downloadData.forEach((y, i) => {
+                    x = (width / points) * i;
+                    const yPos = height - (y / 100) * height;
+                    if (i === 0) ctx.moveTo(x, yPos);
+                    else ctx.lineTo(x, yPos);
+                });
+                ctx.stroke();
+                
+                // Draw upload line
+                ctx.beginPath();
+                ctx.strokeStyle = '#0ea5e9';
+                ctx.lineWidth = 2;
+                const uploadData = [];
+                for (let i = 0; i < points; i++) {
+                    uploadData.push(Math.random() * 30 + 10);
+                }
+                x = 0;
+                uploadData.forEach((y, i) => {
+                    x = (width / points) * i;
+                    const yPos = height - (y / 100) * height;
+                    if (i === 0) ctx.moveTo(x, yPos);
+                    else ctx.lineTo(x, yPos);
+                });
+                ctx.stroke();
+                
+                // Legend
+                ctx.font = '12px Plus Jakarta Sans';
+                ctx.fillStyle = '#10b981';
+                ctx.fillText('Download', width - 80, 20);
+                ctx.fillStyle = '#0ea5e9';
+                ctx.fillText('Upload', width - 80, 35);
+            }
+            
+            drawChart();
+            setInterval(drawChart, 2000);
+        }
+        
+        // Filter buttons
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                btn.parentElement.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
+

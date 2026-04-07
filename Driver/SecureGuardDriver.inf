@@ -1,0 +1,79 @@
+;
+; SecureGuardDriver.inf
+;
+; Installation information for SecureGuard Kernel Driver
+;
+; Copyright (c) 2024 SecureGuard Inc.
+; All Rights Reserved.
+;
+
+[Version]
+Signature                   = "$WINDOWS NT$"
+Class                      = "SecureGuard"
+ClassGuid                  = {4d36e97b-e325-11ce-bfc1-08002be10318}
+Provider                   = "SecureGuard Inc."
+DriverVer                  = 01/15/2024,1.0.0.1
+CatalogFile                = SecureGuardDriver.cat
+
+[DestinationDirs]
+DefaultDestDir             = 12
+DriverFiles                = 12
+
+[SourceDisksNames]
+1                         = %DiskDescription%,,,""
+
+[SourceDisksFiles]
+SecureGuardDriver.sys     = 1,,
+
+[Manufacturer]
+%MfgName%                 = SecureGuardDevices
+
+[SecureGuardDevices]
+%DeviceDescription%       = DriverInstall, Root\SecureGuardDriver
+
+[DriverInstall]
+CopyFiles                 = DriverFiles
+
+[DriverFiles]
+SecureGuardDriver.sys,,,0x00000004
+
+[DriverInstall.Services]
+AddService                = SecureGuardDriver,%SPSVCINST_ASSOCSERVICE%, DriverService
+
+[DriverService]
+ServiceType               = 1 ; SERVICE_KERNEL_DRIVER
+StartType                 = 3 ; SERVICE_DEMAND_START (can be changed to SERVICE_BOOT_START)
+ErrorControl             = 1 ; SERVICE_ERROR_NORMAL
+ServiceBinary            = %12%\SecureGuardDriver.sys
+DisplayName              = %ServiceDescription%
+Description              = %ServiceDescription%
+
+[Strings]
+SPSVCINST_ASSOCSERVICE   = 0x00000002
+MfgName                  = "SecureGuard Inc."
+DiskDescription          = "SecureGuard Driver Disk"
+DeviceDescription        = "SecureGuard Kernel Driver"
+ServiceDescription       = "SecureGuard Kernel-Mode Protection Driver"
+
+;
+; Note: The following registry keys are required for the driver to work properly
+; These are typically added by the installer
+;
+
+[Registry Keys]
+; Event Log registration (optional)
+HKLM,"SYSTEM\CurrentControlSet\Services\EventLog\System\SecureGuardDriver",,,"%ServiceDescription%"
+HKLM,"SYSTEM\CurrentControlSet\Services\EventLog\System\SecureGuardDriver","Types",0x00010001,0x10
+HKLM,"SYSTEM\CurrentControlSet\Services\EventLog\System\SecureGuardDriver","CategoryMessage",0x00020000,"SecureGuardDriver"
+HKLM,"SYSTEM\CurrentControlSet\Services\EventLog\System\SecureGuardDriver","EventMessageFile",0x00020000,"%12%\SecureGuardDriver.sys"
+
+;
+; Driver Parameters (set by user-mode application)
+;
+[Registry Parameters]
+HKLM,"SYSTEM\CurrentControlSet\Services\SecureGuardDriver","Parameters",,,""
+HKLM,"SYSTEM\CurrentControlSet\Services\SecureGuardDriver","Parameters","EnableProcessProtection",0x00010001,1
+HKLM,"SYSTEM\CurrentControlSet\Services\SecureGuardDriver","Parameters","EnableFileProtection",0x00010001,1
+HKLM,"SYSTEM\CurrentControlSet\Services\SecureGuardDriver","Parameters","EnableRegistryProtection",0x00010001,1
+HKLM,"SYSTEM\CurrentControlSet\Services\SecureGuardDriver","Parameters","EnableNetworkProtection",0x00010001,1
+

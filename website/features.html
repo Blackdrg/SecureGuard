@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Features - SecureGuard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --primary: #1a73e8; --primary-dark: #1557b0; --secondary: #34a853; --dark: #202124; --light: #f8f9fa; --gray: #5f6368; --white: #ffffff; }
+        body { font-family: 'Inter', sans-serif; color: var(--dark); background: var(--white); }
+        
+        nav { background: var(--white); box-shadow: 0 2px 6px rgba(0,0,0,0.08); position: fixed; width: 100%; top: 0; z-index: 1000; }
+        .nav-container { max-width: 1200px; margin: 0 auto; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; gap: 0.5rem; font-size: 1.5rem; font-weight: 700; color: var(--primary); }
+        .logo-icon { width: 40px; height: 40px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem; }
+        .nav-links { display: flex; gap: 2rem; list-style: none; }
+        .nav-links a { text-decoration: none; color: var(--gray); font-weight: 500; }
+        .btn { padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; text-decoration: none; transition: all 0.3s; cursor: pointer; border: none; font-size: 1rem; }
+        .btn-primary { background: var(--primary); color: white; }
+        
+        .hero { padding: 8rem 2rem 4rem; text-align: center; background: linear-gradient(135deg, #f0f4ff, #e8f5e9); }
+        .hero h1 { font-size: 3rem; font-weight: 800; margin-bottom: 1rem; }
+        .hero p { font-size: 1.25rem; color: var(--gray); max-width: 600px; margin: 0 auto; }
+        
+        .features-section { padding: 5rem 2rem; max-width: 1200px; margin: 0 auto; }
+        .section-title { text-align: center; margin-bottom: 3rem; }
+        .section-title h2 { font-size: 2.5rem; margin-bottom: 1rem; }
+        
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem; }
+        .feature-card { padding: 2rem; border-radius: 16px; background: var(--light); transition: all 0.3s; }
+        .feature-card:hover { background: var(--white); box-shadow: 0 8px 30px rgba(0,0,0,0.1); transform: translateY(-5px); }
+        .feature-icon { width: 60px; height: 60px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 1rem; }
+        .feature-card h3 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+        .feature-card p { color: var(--gray); }
+        
+        .comparison { padding: 4rem 2rem; background: var(--light); }
+        .comparison-container { max-width: 1000px; margin: 0 auto; }
+        .comparison-table { width: 100%; background: var(--white); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .comparison-table th, .comparison-table td { padding: 1rem; text-align: center; border-bottom: 1px solid #eee; }
+        .comparison-table th { background: var(--primary); color: white; }
+        .comparison-table th:first-child { text-align: left; }
+        .comparison-table td:first-child { text-align: left; font-weight: 500; }
+        .check { color: var(--secondary); font-size: 1.25rem; }
+        
+        footer { background: var(--dark); color: white; padding: 3rem 2rem; }
+        .footer-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <div class="logo"><div class="logo-icon">🛡️</div>SecureGuard</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="features.html">Features</a></li>
+                <li><a href="pricing.html">Pricing</a></li>
+                <li><a href="download.html">Download</a></li>
+            </ul>
+            <a href="signup.html" class="btn btn-primary">Get Started</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1>Powerful Security Features</h1>
+        <p>Discover the advanced protection features that keep you safe from evolving threats</p>
+    </section>
+
+    <section class="features-section">
+        <div class="section-title">
+            <h2>Core Protection</h2>
+        </div>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🛡️</div>
+                <h3>Real-Time Protection</h3>
+                <p>Our AI-powered engine monitors your system 24/7, blocking threats before they can infect your computer.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔍</div>
+                <h3>Advanced Scanning</h3>
+                <p>Multiple scan modes: Quick, Full, and Custom. Heuristic analysis detects unknown threats.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💀</div>
+                <h3>Ransomware Shield</h3>
+                <p>Behavioral monitoring protects your important files from ransomware attacks with automatic backup.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">☁️</div>
+                <h3>Cloud Intelligence</h3>
+                <p>Connected to our global threat network, providing instant protection against new malware.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <h3>Privacy Protection</h3>
+                <p>Webcam and microphone shield, anti-keylogger, and browser privacy features.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Zero Impact</h3>
+                <p>Lightweight design runs silently in the background without slowing your system.</p>
+            </div>
+    </section>
+
+    <section class="comparison">
+        <div class="comparison-container">
+            <div class="section-title">
+                <h2>Feature Comparison</h2>
+            </div>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Free</th>
+                        <th>Pro</th>
+                        <th>Premium</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Virus & Malware Protection</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+                    <tr><td>Real-Time Protection</td><td>✗</td><td class="check">✓</td><td class="check">✓</td></tr>
+                    <tr><td>Ransomware Shield</td><td>✗</td><td class="check">✓</td><td class="check">✓</td></tr>
+                    <tr><td>Automatic Updates</td><td>✗</td><td class="check">✓</td><td class="check">✓</td></tr>
+                    <tr><td>VPN Service</td><td>✗</td><td>✗</td><td class="check">✓</td></tr>
+                    <tr><td>Password Manager</td><td>✗</td><td>✗</td><td class="check">✓</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-container">
+            <div><h4>SecureGuard</h4><p style="color:#aaa;">Advanced cybersecurity for everyone.</p></div>
+            <div><h4>Product</h4><ul><li><a href="features.html" style="color:#aaa;">Features</a></li><li><a href="pricing.html" style="color:#aaa;">Pricing</a></li></ul></div>
+            <div><h4>Support</h4><ul><li><a href="support.html" style="color:#aaa;">Help</a></li></ul></div>
+            <div><h4>Legal</h4><ul><li><a href="privacy.html" style="color:#aaa;">Privacy</a></li></ul></div>
+    </footer>
+</body>
+</html>

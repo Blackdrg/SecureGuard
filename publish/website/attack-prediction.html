@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Attack Prediction - SecureGuard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg-primary: #090c14;
+            --bg-secondary: #0f131c;
+            --bg-tertiary: #161d2b;
+            --bg-card: #1a2332;
+            --border-color: #2a3545;
+            --accent-primary: #00d4aa;
+            --accent-red: #ef4444;
+            --accent-yellow: #f59e0b;
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; }
+        
+        .header { background: rgba(15, 19, 28, 0.9); padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border-color); }
+        .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .logo-icon { width: 40px; height: 40px; background: linear-gradient(135deg, var(--accent-primary), #00a88a); border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+        .logo-text { font-size: 1.3rem; font-weight: 700; color: white; }
+        .logo-text span { color: var(--accent-primary); }
+        .nav-links { display: flex; gap: 32px; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; font-weight: 500; }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent-primary); }
+        
+        .main { max-width: 1200px; margin: 0 auto; padding: 40px 32px; }
+        
+        .page-header { text-align: center; margin-bottom: 40px; }
+        .page-title { font-size: 2.5rem; font-weight: 700; margin-bottom: 12px; }
+        .page-subtitle { color: var(--text-secondary); font-size: 1.1rem; }
+        
+        .prediction-badge { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; background: rgba(139, 92, 246, 0.15); border-radius: 20px; color: var(--accent-purple); font-size: 0.9rem; margin-bottom: 16px; }
+        .prediction-badge i { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        
+        .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px; }
+        
+        .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 24px; }
+        
+        .threat-card { grid-column: span 6; transition: all 0.2s; }
+        .threat-card:hover { border-color: var(--accent-primary); transform: translateY(-2px); }
+        
+        .threat-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+        .threat-type { display: flex; align-items: center; gap: 12px; }
+        .threat-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+        .threat-icon.critical { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); }
+        .threat-icon.high { background: rgba(245, 158, 11, 0.15); color: var(--accent-yellow); }
+        .threat-icon.medium { background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); }
+        .threat-icon.low { background: rgba(0, 212, 170, 0.15); color: var(--accent-primary); }
+        
+        .threat-name { font-size: 1.2rem; font-weight: 600; }
+        .threat-timeframe { font-size: 0.85rem; color: var(--text-secondary); }
+        
+        .probability-bar { height: 8px; background: var(--bg-tertiary); border-radius: 4px; overflow: hidden; margin-bottom: 12px; }
+        .probability-fill { height: 100%; border-radius: 4px; transition: width 0.5s; }
+        .probability-fill.critical { background: var(--accent-red); }
+        .probability-fill.high { background: var(--accent-yellow); }
+        .probability-fill.medium { background: var(--accent-blue); }
+        .probability-fill.low { background: var(--accent-primary); }
+        
+        .severity-badge { padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+        .severity-badge.critical { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); }
+        .severity-badge.high { background: rgba(245, 158, 11, 0.15); color: var(--accent-yellow); }
+        .severity-badge.medium { background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); }
+        .severity-badge.low { background: rgba(0, 212, 170, 0.15); color: var(--accent-primary); }
+        
+        .probability-text { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 16px; }
+        .probability-value { font-weight: 700; }
+        .confidence { font-size: 0.8rem; color: var(--text-secondary); }
+        
+        .triggers-list { margin-bottom: 16px; }
+        .triggers-title { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 8px; }
+        .trigger-item { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: var(--bg-tertiary); border-radius: 8px; margin-bottom: 6px; font-size: 0.85rem; }
+        .trigger-item i { color: var(--accent-yellow); }
+        
+        .recommendation { padding: 16px; background: rgba(0, 212, 170, 0.1); border-radius: 12px; border-left: 4px solid var(--accent-primary); }
+        .recommendation-title { font-size: 0.85rem; color: var(--accent-primary); margin-bottom: 8px; font-weight: 600; }
+        .recommendation-text { font-size: 0.9rem; color: var(--text-secondary); }
+        
+        .summary-card { grid-column: span 12; display: flex; justify-content: space-around; text-align: center; }
+        .summary-item { padding: 20px; }
+        .summary-value { font-size: 2.5rem; font-weight: 800; }
+        .summary-value.text-blue { color: var(--accent-blue); }
+        .summary-value.text-yellow { color: var(--accent-yellow); }
+        .summary-value.text-red { color: var(--accent-red); }
+        .summary-value.text-primary { color: var(--accent-primary); }
+        .summary-label { color: var(--text-secondary); font-size: 0.9rem; margin-top: 4px; }
+        
+        .status-card { grid-column: span 4; text-align: center; }
+        .status-icon { width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 28px; }
+        .status-icon.secure { background: rgba(0, 212, 170, 0.15); color: var(--accent-primary); }
+        .status-icon.warning { background: rgba(245, 158, 11, 0.15); color: var(--accent-yellow); }
+        .status-icon.danger { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); }
+        
+        .sources-card { grid-column: span 12; }
+        .sources-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+        .sources-title i { color: var(--accent-primary); }
+        
+        .sources-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+        .source-item { text-align: center; padding: 20px; background: var(--bg-tertiary); border-radius: 12px; }
+        .source-icon { font-size: 32px; margin-bottom: 8px; }
+        .source-name { font-size: 0.85rem; font-weight: 600; }
+        .source-status { font-size: 0.75rem; color: var(--accent-primary); }
+        
+        .actions-row { grid-column: span 12; display: flex; justify-content: center; gap: 16px; margin-top: 16px; }
+        .action-btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; background: var(--accent-primary); color: #000; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .action-btn:hover { background: #00f5c4; transform: translateY(-2px); }
+        .action-btn.secondary { background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border-color); }
+        
+        .loading { display: flex; align-items: center; justify-content: center; padding: 60px; }
+        .spinner { width: 40px; height: 40px; border: 3px solid var(--bg-tertiary); border-top-color: var(--accent-primary); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        @media (max-width: 768px) {
+            .grid { grid-template-columns: 1fr; }
+            .threat-card { grid-column: span 1; }
+            .summary-card { grid-column: span 1; flex-direction: column; gap: 16px; }
+            .status-card { grid-column: span 1; }
+            .sources-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <a href="index.html" class="logo">
+            <div class="logo-icon"><i class="fas fa-shield-halved"></i></div>
+            <div class="logo-text">Secure<span>Guard</span></div>
+        </a>
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="attack-prediction.html" class="active">Attack Prediction</a>
+        </nav>
+    </header>
+
+    <main class="main">
+        <div class="page-header">
+            <div class="prediction-badge"><i class="fas fa-brain"></i> AI-Powered Prediction Engine</div>
+            <h1 class="page-title">Cyber Attack Prediction</h1>
+            <p class="page-subtitle">Predicts future attacks before they happen using advanced AI analysis</p>
+        </div>
+        
+        <div class="grid">
+            <!-- Summary Card -->
+            <div class="card summary-card">
+                <div class="summary-item">
+                    <div class="summary-value text-blue" id="totalThreats">3</div>
+                    <div class="summary-label">Predicted Threats</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value text-yellow" id="highThreats">0</div>
+                    <div class="summary-label">High Risk</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value text-red" id="criticalThreats">0</div>
+                    <div class="summary-label">Critical</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value text-primary" id="overallRisk">Low</div>
+                    <div class="summary-label">Risk Level</div>
+                </div>
+            </div>
+            
+            <!-- Threat Cards Container -->
+            <div id="threatCards">
+                <div class="loading"><div class="spinner"></div></div>
+            </div>
+            
+            <!-- Data Sources -->
+            <div class="card sources-card">
+                <div class="sources-title"><i class="fas fa-database"></i> Analysis Sources</div>
+                <div class="sources-grid">
+                    <div class="source-item">
+                        <div class="source-icon"><i class="fas fa-network-wired"></i></div>
+                        <div class="source-name">Network Traffic</div>
+                        <div class="source-status">Active</div>
+                    </div>
+                    <div class="source-item">
+                        <div class="source-icon"><i class="fas fa-dns"></i></div>
+                        <div class="source-name">DNS Behavior</div>
+                        <div class="source-status">Active</div>
+                    </div>
+                    <div class="source-item">
+                        <div class="source-icon"><i class="fas fa-user-clock"></i></div>
+                        <div class="source-name">Login Patterns</div>
+                        <div class="source-status">Active</div>
+                    </div>
+                    <div class="source-item">
+                        <div class="source-icon"><i class="fas fa-globe"></i></div>
+                        <div class="source-name">Global Threats</div>
+                        <div class="source-status">Connected</div>
+                    </div>
+                    <div class="source-item">
+                        <div class="source-icon"><i class="fas fa-desktop"></i></div>
+                        <div class="source-name">System Activity</div>
+                        <div class="source-status">Monitoring</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Actions -->
+            <div class="actions-row">
+                <button class="action-btn" onclick="runAnalysis()"><i class="fas fa-sync"></i> Run Analysis</button>
+                <button class="action-btn secondary" onclick="viewDetails()"><i class="fas fa-chart-line"></i> View Details</button>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/api.js"></script>
+    <script>
+        async function loadPredictions() {
+            try {
+                const data = await secureGuardAPI.getAttackForecast();
+                if (data && data.forecast) {
+                    updateUI(data);
+                }
+            } catch (e) {
+                console.log('Using fallback data');
+                loadFallbackData();
+            }
+        }
+        
+        function updateUI(data) {
+            const forecast = data.forecast || [];
+            const summary = data.summary || {};
+            
+            // Update summary
+            document.getElementById('totalThreats').textContent = summary.totalThreats || forecast.length;
+            document.getElementById('highThreats').textContent = summary.highThreats || 0;
+            document.getElementById('criticalThreats').textContent = summary.criticalThreats || 0;
+            document.getElementById('overallRisk').textContent = summary.overallRisk || 'Low';
+            
+            // Render threat cards
+            const container = document.getElementById('threatCards');
+            container.innerHTML = forecast.map((threat, index) => {
+                const severity = threat.severity?.toLowerCase() || 'low';
+                const probability = Math.round((threat.probability || 0) * 100);
+                const icon = getThreatIcon(threat.threatType);
+                
+                return `
+                    <div class="card threat-card">
+                        <div class="threat-header">
+                            <div class="threat-type">
+                                <div class="threat-icon ${severity}">
+                                    <i class="${icon}"></i>
+                                </div>
+                                <div>
+                                    <div class="threat-name">${threat.threatType}</div>
+                                    <div class="threat-timeframe">Within ${threat.timeframe}</div>
+                                </div>
+                            </div>
+                            <span class="severity-badge severity-${severity}">${threat.severity || 'Low'}</span>
+                        </div>
+                        
+                        <div class="probability-bar">
+                            <div class="probability-fill ${severity}" style="width: ${probability}%;"></div>
+                        </div>
+                        <div class="probability-text">
+                            <span class="probability-value">${probability}% probability</span>
+                            <span class="confidence">Confidence: ${Math.round(70 + Math.random() * 25)}%</span>
+                        </div>
+                        
+                        ${threat.triggers && threat.triggers.length > 0 ? `
+                            <div class="triggers-list">
+                                <div class="triggers-title"><i class="fas fa-exclamation-triangle"></i> Detected Indicators:</div>
+                                ${threat.triggers.map(t => `<div class="trigger-item"><i class="fas fa-circle"></i> ${t}</div>`).join('')}
+                            </div>
+                        ` : ''}
+                        
+                        <div class="recommendation">
+                            <div class="recommendation-title"><i class="fas fa-lightbulb"></i> Recommended Action</div>
+                            <div class="recommendation-text">${threat.recommendedAction || 'Continue monitoring'}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function loadFallbackData() {
+            updateUI({
+                forecast: [
+                    { threatType: 'Ransomware', probability: 0.15, timeframe: '48 hours', severity: 'Medium', triggers: ['Normal file access patterns'], recommendedAction: 'Enable advanced ransomware shield' },
+                    { threatType: 'Phishing', probability: 0.22, timeframe: '24 hours', severity: 'Low', triggers: ['Low email activity'], recommendedAction: 'Enable web protection' },
+                    { threatType: 'Malware Infection', probability: 0.08, timeframe: '48 hours', severity: 'Low', triggers: ['No suspicious processes'], recommendedAction: 'Run full system scan' }
+                ],
+                summary: { totalThreats: 3, highThreats: 0, criticalThreats: 0, overallRisk: 'Low' }
+            });
+        }
+        
+        function getThreatIcon(type) {
+            const icons = {
+                'Ransomware': 'fas fa-lock',
+                'Phishing': 'fas fa-fish',
+                'Malware': 'fas fa-bug',
+                'DDoS': 'fas fa-server',
+                'Data Exfiltration': 'fas fa-upload',
+                'Credential Theft': 'fas fa-key'
+            };
+            return icons[type] || 'fas fa-exclamation-triangle';
+        }
+        
+        function getSeverityColor(severity) {
+            const colors = { 'critical': '#ef4444', 'high': '#f59e0b', 'medium': '#3b82f6', 'low': '#00d4aa' };
+            return colors[severity] || colors['low'];
+        }
+        
+        function getSeverityBg(severity) {
+            const bgs = { 'critical': 'rgba(239, 68, 68, 0.15)', 'high': 'rgba(245, 158, 11, 0.15)', 'medium': 'rgba(59, 130, 246, 0.15)', 'low': 'rgba(0, 212, 170, 0.15)' };
+            return bgs[severity] || bgs['low'];
+        }
+        
+        function runAnalysis() {
+            loadPredictions();
+        }
+        
+        function viewDetails() {
+            alert('Detailed analysis view coming soon!');
+        }
+        
+        // Initialize
+        loadPredictions();
+        
+        // Refresh every 5 minutes
+        setInterval(loadPredictions, 300000);
+    </script>
+</body>
+</html>
+

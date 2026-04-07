@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Threat Radar - SecureGuard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        :root {
+            --bg-primary: #090c14;
+            --bg-secondary: #0f131c;
+            --bg-tertiary: #161d2b;
+            --bg-card: #1a2332;
+            --border-color: #2a3545;
+            --accent-primary: #00d4aa;
+            --accent-red: #ef4444;
+            --accent-yellow: #f59e0b;
+            --accent-blue: #3b82f6;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; }
+        
+        .header { background: rgba(15, 19, 28, 0.9); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border-color); }
+        .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .logo-icon { width: 40px; height: 40px; background: linear-gradient(135deg, var(--accent-primary), #00a88a); border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+        .logo-text { font-size: 1.3rem; font-weight: 700; color: white; }
+        .logo-text span { color: var(--accent-primary); }
+        .nav-links { display: flex; gap: 32px; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; font-weight: 500; transition: color 0.15s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent-primary); }
+        
+        .main { max-width: 1600px; margin: 0 auto; padding: 32px; }
+        
+        .page-title { font-size: 2rem; font-weight: 700; margin-bottom: 8px; }
+        .page-subtitle { color: var(--text-secondary); margin-bottom: 32px; }
+        
+        .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 32px; }
+        .stat-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 24px; }
+        .stat-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; font-size: 24px; }
+        .stat-icon.attacks { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); }
+        .stat-icon.threats { background: rgba(245, 158, 11, 0.15); color: var(--accent-yellow); }
+        .stat-icon.blocked { background: rgba(0, 212, 170, 0.15); color: var(--accent-primary); }
+        .stat-icon.countries { background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); }
+        .stat-value { font-size: 2rem; font-weight: 700; }
+        .stat-label { color: var(--text-secondary); font-size: 0.9rem; margin-top: 4px; }
+        
+        .map-container { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 24px; margin-bottom: 32px; }
+        .map-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .map-title { font-size: 1.2rem; font-weight: 600; }
+        .live-badge { display: flex; align-items: center; gap: 8px; padding: 6px 12px; background: rgba(0, 212, 170, 0.15); border-radius: 20px; font-size: 0.85rem; color: var(--accent-primary); }
+        .live-dot { width: 8px; height: 8px; background: var(--accent-primary); border-radius: 50%; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        
+        #map { height: 450px; border-radius: 12px; }
+        
+        .content-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        
+        .panel { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 24px; }
+        .panel-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .panel-title i { color: var(--accent-primary); }
+        
+        .attack-list { display: flex; flex-direction: column; gap: 12px; }
+        .attack-item { display: flex; align-items: center; gap: 16px; padding: 16px; background: var(--bg-tertiary); border-radius: 12px; }
+        .attack-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .attack-icon.ransomware { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); }
+        .attack-icon.phishing { background: rgba(245, 158, 11, 0.15); color: var(--accent-yellow); }
+        .attack-icon.ddos { background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); }
+        .attack-icon.malware { background: rgba(139, 92, 246, 0.15); color: #8b5cf6; }
+        .attack-info { flex: 1; }
+        .attack-type { font-weight: 600; margin-bottom: 4px; }
+        .attack-target { font-size: 0.85rem; color: var(--text-secondary); }
+        .attack-meta { text-align: right; }
+        .attack-time { font-size: 0.8rem; color: var(--text-secondary); }
+        .attack-severity { font-size: 0.75rem; padding: 4px 8px; border-radius: 6px; margin-top: 4px; display: inline-block; }
+        .severity-critical { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); }
+        .severity-high { background: rgba(245, 158, 11, 0.15); color: var(--accent-yellow); }
+        .severity-medium { background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); }
+        
+        .country-list { display: flex; flex-direction: column; gap: 8px; }
+        .country-item { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--bg-tertiary); border-radius: 10px; }
+        .country-flag { font-size: 20px; width: 32px; text-align: center; }
+        .country-name { flex: 1; font-weight: 500; }
+        .country-threats { font-weight: 600; color: var(--accent-red); }
+        .country-risk { font-size: 0.75rem; padding: 3px 8px; border-radius: 6px; }
+        .risk-high { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); }
+        .risk-medium { background: rgba(245, 158, 11, 0.15); color: var(--accent-yellow); }
+        .risk-low { background: rgba(0, 212, 170, 0.15); color: var(--accent-primary); }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <a href="index.html" class="logo">
+            <div class="logo-icon"><i class="fas fa-shield-halved"></i></div>
+            <div class="logo-text">Secure<span>Guard</span></div>
+        </a>
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="features.html">Features</a>
+            <a href="pricing.html">Pricing</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="admin.html">Admin</a>
+            <a href="risk-score.html">Risk Score</a>
+            <a href="attack-prediction.html">Attack Prediction</a>
+            <a href="digital-identity.html">Digital Identity</a>
+            <a href="threat-radar.html" class="active">Threat Radar</a>
+        </nav>
+    </header>
+
+    <main class="main">
+        <h1 class="page-title">Global Threat Radar</h1>
+        <p class="page-subtitle">Real-time worldwide attack visualization and threat intelligence</p>
+        
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-icon attacks"><i class="fas fa-crosshairs"></i></div>
+                <div class="stat-value" id="activeAttacks">15</div>
+                <div class="stat-label">Active Attacks</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon threats"><i class="fas fa-bug"></i></div>
+                <div class="stat-value" id="totalThreats">54,820</div>
+                <div class="stat-label">Total Threats (24h)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon blocked"><i class="fas fa-shield-virus"></i></div>
+                <div class="stat-value" id="blocked">2,340</div>
+                <div class="stat-label">Attacks Blocked</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon countries"><i class="fas fa-globe"></i></div>
+                <div class="stat-value" id="countryCount">15</div>
+                <div class="stat-label">Countries Affected</div>
+            </div>
+        </div>
+        
+        <div class="map-container">
+            <div class="map-header">
+                <div class="map-title"><i class="fas fa-map-marked-alt"></i> Live Attack Map</div>
+                <div class="live-badge"><div class="live-dot"></div> Live</div>
+            </div>
+            <div id="map"></div>
+        </div>
+        
+        <div class="content-grid">
+            <div class="panel">
+                <div class="panel-title"><i class="fas fa-bolt"></i> Recent Attacks</div>
+                <div class="attack-list" id="attackList">
+                    <!-- Attacks loaded via JS -->
+                </div>
+            </div>
+            
+            <div class="panel">
+                <div class="panel-title"><i class="fas fa-chart-bar"></i> Top Threat Countries</div>
+                <div class="country-list" id="countryList">
+                    <!-- Countries loaded via JS -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="js/api.js"></script>
+    <script>
+        // Initialize map
+        const map = L.map('map').setView([20, 0], 2);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+        
+        const markers = [];
+        
+        // Load radar data
+        async function loadRadarData() {
+            try {
+                const data = await secureGuardAPI.getThreatRadar();
+                if (data) {
+                    document.getElementById('activeAttacks').textContent = data.activeAttacks;
+                    document.getElementById('totalThreats').textContent = data.totalThreats.toLocaleString();
+                    document.getElementById('blocked').textContent = data.attacksBlocked.toLocaleString();
+                    document.getElementById('countryCount').textContent = data.countries.length;
+                    
+                    // Update map markers
+                    markers.forEach(m => map.removeLayer(m));
+                    markers.length = 0;
+                    
+                    data.recentAttacks.forEach(attack => {
+                        const country = data.countries.find(c => c.code === attack.country);
+                        if (country) {
+                            const marker = L.circleMarker([country.lat, country.lon], {
+                                radius: 8,
+                                fillColor: attack.severity === 'Critical' ? '#ef4444' : 
+                                          attack.severity === 'High' ? '#f59e0b' : '#3b82f6',
+                                color: 'white',
+                                weight: 2,
+                                opacity: 1,
+                                fillOpacity: 0.8
+                            }).addTo(map);
+                            marker.bindPopup(`<b>${attack.type}</b><br>${attack.target}<br>${attack.country}`);
+                            markers.push(marker);
+                        }
+                    });
+                    
+                    // Update attack list
+                    const attackList = document.getElementById('attackList');
+                    attackList.innerHTML = data.recentAttacks.map(attack => `
+                        <div class="attack-item">
+                            <div class="attack-icon ${attack.type.toLowerCase()}">
+                                <i class="fas fa-${getAttackIcon(attack.type)}"></i>
+                            </div>
+                            <div class="attack-info">
+                                <div class="attack-type">${attack.type}</div>
+                                <div class="attack-target">Targeting: ${attack.target}</div>
+                            </div>
+                            <div class="attack-meta">
+                                <div class="attack-time">${formatTime(attack.time)}</div>
+                                <span class="attack-severity severity-${attack.severity.toLowerCase()}">${attack.severity}</span>
+                            </div>
+                        </div>
+                    `).join('');
+                    
+                    // Update country list
+                    const countryList = document.getElementById('countryList');
+                    countryList.innerHTML = data.countries.slice(0, 8).map(c => `
+                        <div class="country-item">
+                            <span class="country-flag">${getFlag(c.code)}</span>
+                            <span class="country-name">${getCountryName(c.code)}</span>
+                            <span class="country-threats">${c.threats.toLocaleString()}</span>
+                            <span class="country-risk risk-${c.risk.toLowerCase()}">${c.risk}</span>
+                        </div>
+                    `).join('');
+                }
+            } catch(e) {
+                console.log('Using fallback data');
+                loadFallbackData();
+            }
+        }
+        
+        function getAttackIcon(type) {
+            const icons = { 'Ransomware': 'lock', 'Phishing': 'fish', 'DDoS': 'server', 'Malware': 'bug' };
+            return icons[type] || 'exclamation-triangle';
+        }
+        
+        function getFlag(code) {
+            const flags = { 'US': '🇺🇸', 'CN': '🇨🇳', 'RU': '🇷🇺', 'BR': '🇧🇷', 'IN': '🇮🇳', 'DE': '🇩🇪', 'UK': '🇬🇧', 'JP': '🇯🇵' };
+            return flags[code] || '🌍';
+        }
+        
+        function getCountryName(code) {
+            const names = { 'US': 'United States', 'CN': 'China', 'RU': 'Russia', 'BR': 'Brazil', 'IN': 'India', 'DE': 'Germany', 'UK': 'United Kingdom', 'JP': 'Japan' };
+            return names[code] || code;
+        }
+        
+        function formatTime(date) {
+            const diff = Date.now() - new Date(date).getTime();
+            const mins = Math.floor(diff / 60000);
+            return mins < 60 ? `${mins}m ago` : `${Math.floor(mins/60)}h ago`;
+        }
+        
+        function loadFallbackData() {
+            document.getElementById('activeAttacks').textContent = '15';
+            document.getElementById('totalThreats').textContent = '54,820';
+            document.getElementById('blocked').textContent = '2,340';
+            document.getElementById('countryCount').textContent = '15';
+        }
+        
+        loadRadarData();
+        setInterval(loadRadarData, 30000);
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,93 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: ./backend-python
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://secureguard:secure@db:5432/secureguard
+      - REDIS_URL=redis://cache:6379
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-change-this-in-production}
+      - DEBUG=false
+    depends_on:
+      db:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
+    restart: unless-stopped
+    volumes:
+      - ./backend-python:/app
+      - ml_models:/app/ml_models
+    networks:
+      - secureguard_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=secureguard
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-secure}
+      - POSTGRES_DB=secureguard
+    restart: unless-stopped
+    networks:
+      - secureguard_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U secureguard"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  cache:
+    image: redis:7-alpine
+    restart: unless-stopped
+    networks:
+      - secureguard_network
+    command: redis-server --requirepass ${REDIS_PASSWORD:-} --maxmemory 256mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+      - website:/usr/share/nginx/html:ro
+    depends_on:
+      - api
+    restart: unless-stopped
+    networks:
+      - secureguard_network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_data:
+  ml_models:
+  website:
+
+networks:
+  secureguard_network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.0.0/16
+

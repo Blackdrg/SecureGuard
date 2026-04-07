@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - SecureGuard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0ea5e9;
+            --primary-dark: #0284c7;
+            --secondary: #10b981;
+            --secondary-dark: #059669;
+            --accent: #8b5cf6;
+            --dark: #0f172a;
+            --dark-2: #1e293b;
+            --dark-3: #334155;
+            --dark-card: #162033;
+            --dark-card-hover: #1e2d42;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border-subtle: rgba(255,255,255,0.05);
+            --border-light: rgba(255,255,255,0.1);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --shadow-glow: 0 0 30px rgba(14, 165, 233, 0.2);
+            --shadow-lg: 0 10px 40px rgba(0,0,0,0.5);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+        .bg-gradient {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: -1;
+            background: 
+                radial-gradient(ellipse 100% 80% at 20% 0%, rgba(14, 165, 233, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse 80% 60% at 80% 100%, rgba(16, 185, 129, 0.06) 0%, transparent 50%);
+        }
+        .app-container { display: flex; min-height: 100vh; }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 270px;
+            background: rgba(15, 23, 42, 0.95);
+            border-right: 1px solid var(--border-subtle);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
+        }
+        .sidebar-header { padding: 24px; border-bottom: 1px solid var(--border-subtle); }
+        .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .logo-icon {
+            width: 44px; height: 44px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: var(--radius-md);
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+        }
+        .logo-icon i { font-size: 22px; color: white; }
+        .logo-text { font-size: 1.4rem; font-weight: 700; color: var(--text-primary); }
+        .logo-text span {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .sidebar-nav { flex: 1; padding: 16px; overflow-y: auto; }
+        .nav-section { margin-bottom: 24px; }
+        .nav-section-title {
+            font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 1px; color: var(--text-muted); padding: 8px 16px; margin-bottom: 4px;
+        }
+        .nav-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 16px; border-radius: var(--radius-md);
+            color: var(--text-secondary); text-decoration: none;
+            font-weight: 500; font-size: 0.9rem;
+            transition: all 0.15s ease; margin-bottom: 4px;
+            cursor: pointer; border: none; background: transparent;
+            width: 100%; text-align: left; position: relative;
+        }
+        .nav-item::before {
+            content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+            width: 3px; background: linear-gradient(180deg, var(--primary), var(--secondary));
+            transform: scaleY(0); transition: transform 0.15s ease;
+        }
+        .nav-item:hover {
+            background: rgba(255,255,255,0.03); color: var(--text-primary);
+            transform: translateX(4px);
+        }
+        .nav-item.active {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.15), rgba(16, 185, 129, 0.1));
+            color: var(--primary); border: 1px solid rgba(14, 165, 233, 0.2);
+        }
+        .nav-item.active::before { transform: scaleY(1); }
+        .nav-item i { font-size: 18px; width: 24px; text-align: center; }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1; margin-left: 270px;
+            display: flex; flex-direction: column; min-height: 100vh;
+        }
+        .top-header {
+            background: rgba(15, 23, 42, 0.8);
+            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 16px 32px;
+            display: flex; align-items: center; justify-content: space-between;
+            position: sticky; top: 0; z-index: 50;
+        }
+        .page-title { font-size: 1.3rem; font-weight: 600; display: flex; align-items: center; gap: 12px; }
+        .page-title i {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .header-right { display: flex; align-items: center; gap: 16px; }
+        
+        /* Dashboard Content */
+        .dashboard-content { padding: 32px; flex: 1; }
+        .dashboard-grid {
+            display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px;
+        }
+        .card {
+            background: linear-gradient(145deg, rgba(22, 32, 51, 0.9), rgba(15, 23, 42, 0.8));
+            border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 24px;
+            transition: all 0.25s ease; position: relative; overflow: hidden;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
+        .card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+        }
+        
+        /* Stats */
+        .stat-card { grid-column: span 3; text-align: center; }
+        .stat-icon {
+            width: 56px; height: 56px; margin: 0 auto 16px;
+            border-radius: var(--radius-md); display: flex;
+            align-items: center; justify-content: center;
+        }
+        .stat-icon.users { background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(59, 130, 246, 0.1)); }
+        .stat-icon.devices { background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(14, 165, 233, 0.1)); }
+        .stat-icon.threats { background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(245, 158, 11, 0.1)); }
+        .stat-icon.revenue { background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(59, 130, 246, 0.1)); }
+        .stat-icon i { font-size: 24px; }
+        .stat-icon.users i { color: var(--primary); }
+        .stat-icon.devices i { color: var(--secondary); }
+        .stat-icon.threats i { color: var(--danger); }
+        .stat-icon.revenue i { color: var(--accent); }
+        .stat-value { font-size: 2rem; font-weight: 700; }
+        .stat-label { font-size: 0.85rem; color: var(--text-secondary); margin-top: 4px; }
+        .stat-change { font-size: 0.75rem; margin-top: 8px; }
+        .stat-change.up { color: var(--secondary); }
+        .stat-change.down { color: var(--danger); }
+        
+        /* Tabs */
+        .tabs-container { grid-column: span 12; }
+        .tabs {
+            display: flex; gap: 8px; margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-subtle); padding-bottom: 8px;
+        }
+        .tab {
+            padding: 10px 20px; cursor: pointer;
+            border-bottom: 2px solid transparent;
+            color: var(--text-secondary); font-weight: 500;
+            transition: all 0.2s;
+        }
+        .tab:hover { color: var(--text-primary); }
+        .tab.active {
+            border-bottom-color: var(--primary); color: var(--primary);
+        }
+        
+        /* Tables */
+        .data-table { grid-column: span 12; }
+        .table-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 16px;
+        }
+        .search-input {
+            padding: 10px 16px; background: var(--dark-3);
+            border: 1px solid var(--border-subtle); border-radius: var(--radius-md);
+            color: var(--text-primary); width: 250px;
+        }
+        .search-input:focus { outline: none; border-color: var(--primary); }
+        .table {
+            width: 100%; border-collapse: collapse;
+        }
+        .table th {
+            text-align: left; padding: 14px 16px;
+            font-size: 0.75rem; font-weight: 600;
+            color: var(--text-muted); text-transform: uppercase;
+            letter-spacing: 0.5px; border-bottom: 1px solid var(--border-subtle);
+        }
+        .table td {
+            padding: 14px 16px; font-size: 0.9rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .table tr:hover td { background: var(--dark-card); }
+        
+        .status-badge {
+            padding: 4px 10px; border-radius: 20px;
+            font-size: 0.75rem; font-weight: 600;
+        }
+        .status-badge.active {
+            background: rgba(16, 185, 129, 0.2); color: var(--secondary);
+        }
+        .status-badge.inactive {
+            background: rgba(239, 68, 68, 0.2); color: var(--danger);
+        }
+        .status-badge.pending {
+            background: rgba(245, 158, 11, 0.2); color: var(--warning);
+        }
+        
+        .action-btn {
+            padding: 6px 12px; border-radius: var(--radius-sm);
+            background: var(--dark-card); border: 1px solid var(--border-subtle);
+            color: var(--text-secondary); cursor: pointer; font-size: 0.8rem;
+            margin-right: 4px; transition: all 0.15s;
+        }
+        .action-btn:hover { color: var(--primary); border-color: var(--primary); }
+        .action-btn.danger:hover { color: var(--danger); border-color: var(--danger); }
+        
+        /* Analytics */
+        .analytics-card { grid-column: span 6; }
+        .chart-container {
+            height: 200px; margin-top: 16px;
+            position: relative;
+        }
+        .chart-bars {
+            display: flex; align-items: flex-end; justify-content: space-between;
+            height: 100%; gap: 8px;
+        }
+        .chart-bar {
+            flex: 1; background: linear-gradient(180deg, var(--primary), var(--secondary));
+            border-radius: 4px 4px 0 0; transition: height 0.3s;
+            position: relative;
+        }
+        .chart-bar::after {
+            content: attr(data-label);
+            position: absolute; bottom: -24px; left: 50%;
+            transform: translateX(-50%); font-size: 0.7rem; color: var(--text-muted);
+        }
+        
+        /* ML Model Status */
+        .ml-card { grid-column: span 4; }
+        .ml-status {
+            display: flex; align-items: center; gap: 12px;
+            padding: 16px; background: var(--dark-card);
+            border-radius: var(--radius-md); margin-top: 16px;
+        }
+        .ml-indicator {
+            width: 12px; height: 12px; border-radius: 50%;
+            background: var(--secondary); animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .ml-info h4 { font-weight: 600; }
+        .ml-info p { font-size: 0.8rem; color: var(--text-secondary); }
+        
+        /* Device List */
+        .device-card { grid-column: span 6; }
+        .device-list { max-height: 300px; overflow-y: auto; margin-top: 16px; }
+        .device-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px; background: var(--dark-card);
+            border-radius: var(--radius-md); margin-bottom: 8px;
+        }
+        .device-icon {
+            width: 40px; height: 40px; border-radius: var(--radius-sm);
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(16, 185, 129, 0.1));
+            display: flex; align-items: center; justify-content: center;
+        }
+        .device-icon i { color: var(--primary); }
+        .device-info { flex: 1; }
+        .device-name { font-weight: 600; font-size: 0.9rem; }
+        .device-os { font-size: 0.75rem; color: var(--text-muted); }
+        
+        /* Buttons */
+        .btn {
+            padding: 10px 20px; border-radius: var(--radius-md);
+            font-weight: 600; cursor: pointer;
+            transition: all 0.25s ease; border: none;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+        .btn-primary:hover { transform: translateY(-2px); }
+        
+        /* Live Indicator */
+        .live-indicator {
+            display: flex; align-items: center; gap: 8px;
+            padding: 6px 12px; background: rgba(16, 185, 129, 0.1);
+            border-radius: 20px;
+        }
+        .live-dot {
+            width: 8px; height: 8px; background: var(--secondary);
+            border-radius: 50%; animation: livePulse 1.5s infinite;
+        }
+        @keyframes livePulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        .live-indicator span { font-size: 0.8rem; color: var(--secondary); font-weight: 600; }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .stat-card { grid-column: span 6; }
+            .analytics-card, .device-card, .ml-card { grid-column: span 12; }
+        }
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .main-content { margin-left: 0; }
+            .dashboard-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-gradient"></div>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon"><i class="fas fa-shield-alt"></i></div>
+                    <div class="logo-text">Secure<span>Guard</span></div>
+                </a>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Admin</div>
+                    <a href="admin.html" class="nav-item active"><i class="fas fa-user-shield"></i>Dashboard</a>
+                    <a href="#" class="nav-item" onclick="switchTab('users')"><i class="fas fa-users"></i>Users</a>
+                    <a href="#" class="nav-item" onclick="switchTab('devices')"><i class="fas fa-laptop"></i>Devices</a>
+                    <a href="#" class="nav-item" onclick="switchTab('threats')"><i class="fas fa-virus"></i>Threats</a>
+                    <a href="#" class="nav-item" onclick="switchTab('ml')"><i class="fas fa-brain"></i>ML Models</a>
+                    <a href="#" class="nav-item" onclick="switchTab('analytics')"><i class="fas fa-chart-line"></i>Analytics</a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">System</div>
+                    <a href="dashboard.html" class="nav-item"><i class="fas fa-th-large"></i>Dashboard</a>
+                    <a href="settings.html" class="nav-item"><i class="fas fa-cog"></i>Settings</a>
+                </div>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <h1 class="page-title"><i class="fas fa-user-shield"></i>Admin Dashboard</h1>
+                <div class="header-right">
+                    <div class="live-indicator">
+                        <div class="live-dot"></div>
+                        <span>LIVE</span>
+                    </div>
+                    <button class="btn btn-primary"><i class="fas fa-download"></i> Export</button>
+                </div>
+            </header>
+            
+            <div class="dashboard-content">
+                <div class="dashboard-grid">
+                    <!-- Stats -->
+                    <div class="card stat-card">
+                        <div class="stat-icon users"><i class="fas fa-users"></i></div>
+                        <div class="stat-value" id="totalUsers">52,847</div>
+                        <div class="stat-label">Total Users</div>
+                        <div class="stat-change up"><i class="fas fa-arrow-up"></i> 12% from last month</div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-icon devices"><i class="fas fa-laptop"></i></div>
+                        <div class="stat-value" id="activeDevices">128,459</div>
+                        <div class="stat-label">Active Devices</div>
+                        <div class="stat-change up"><i class="fas fa-arrow-up"></i> 8% from last month</div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-icon threats"><i class="fas fa-shield-virus"></i></div>
+                        <div class="stat-value" id="threatsBlocked">127,453</div>
+                        <div class="stat-label">Threats Blocked Today</div>
+                        <div class="stat-change down"><i class="fas fa-arrow-down"></i> 5% from yesterday</div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-icon revenue"><i class="fas fa-dollar-sign"></i></div>
+                        <div class="stat-value">$284K</div>
+                        <div class="stat-label">Monthly Revenue</div>
+                        <div class="stat-change up"><i class="fas fa-arrow-up"></i> 15% from last month</div>
+                    </div>
+                    
+                    <!-- Attack Trends -->
+                    <div class="card analytics-card">
+                        <h3><i class="fas fa-chart-line"></i> Attack Trends (7 Days)</h3>
+                        <div class="chart-container">
+                            <div class="chart-bars" id="attackChart">
+                                <div class="chart-bar" style="height: 60%;" data-label="Mon"></div>
+                                <div class="chart-bar" style="height: 80%;" data-label="Tue"></div>
+                                <div class="chart-bar" style="height: 45%;" data-label="Wed"></div>
+                                <div class="chart-bar" style="height: 90%;" data-label="Thu"></div>
+                                <div class="chart-bar" style="height: 70%;" data-label="Fri"></div>
+                                <div class="chart-bar" style="height: 55%;" data-label="Sat"></div>
+                                <div class="chart-bar" style="height: 40%;" data-label="Sun"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Top Threats -->
+                    <div class="card analytics-card">
+                        <h3><i class="fas fa-exclamation-triangle"></i> Top Threat Categories</h3>
+                        <div style="margin-top: 16px;">
+                            <div class="device-item">
+                                <div class="device-icon" style="background: rgba(239,68,68,0.2);"><i class="fas fa-skull" style="color: var(--danger);"></i></div>
+                                <div class="device-info">
+                                    <div class="device-name">Ransomware</div>
+                                    <div class="device-os">12,459 detections</div>
+                                </div>
+                            </div>
+                            <div class="device-item">
+                                <div class="device-icon" style="background: rgba(245,158,11,0.2);"><i class="fas fa-bug" style="color: var(--warning);"></i></div>
+                                <div class="device-info">
+                                    <div class="device-name">Trojans</div>
+                                    <div class="device-os">8,234 detections</div>
+                                </div>
+                            </div>
+                            <div class="device-item">
+                                <div class="device-icon" style="background: rgba(139,92,246,0.2);"><i class="fas fa-spider" style="color: var(--accent);"></i></div>
+                                <div class="device-info">
+                                    <div class="device-name">Adware</div>
+                                    <div class="device-os">5,621 detections</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- ML Models -->
+                    <div class="card ml-card">
+                        <h3><i class="fas fa-brain"></i> ML Engine Status</h3>
+                        <div class="ml-status">
+                            <div class="ml-indicator"></div>
+                            <div class="ml-info">
+                                <h4>Malware Detector</h4>
+                                <p>Running - 99.7% accuracy</p>
+                            </div>
+                        </div>
+                        <div class="ml-status">
+                            <div class="ml-indicator"></div>
+                            <div class="ml-info">
+                                <h4>Behavior Analyzer</h4>
+                                <p>Running - 98.2% accuracy</p>
+                            </div>
+                        </div>
+                        <div class="ml-status">
+                            <div class="ml-indicator"></div>
+                            <div class="ml-info">
+                                <h4>Ransomware Shield</h4>
+                                <p>Running - 99.1% accuracy</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Devices -->
+                    <div class="card device-card">
+                        <h3><i class="fas fa-laptop"></i> Active Devices</h3>
+                        <div class="device-list" id="deviceList">
+                            <div class="device-item">
+                                <div class="device-icon"><i class="fas fa-desktop"></i></div>
+                                <div class="device-info">
+                                    <div class="device-name">DESKTOP-PC-001</div>
+                                    <div class="device-os">Windows 11 Pro - 192.168.1.100</div>
+                                </div>
+                                <span class="status-badge active">Online</span>
+                            </div>
+                            <div class="device-item">
+                                <div class="device-icon"><i class="fas fa-laptop"></i></div>
+                                <div class="device-info">
+                                    <div class="device-name">LAPTOP-Work</div>
+                                    <div class="device-os">Windows 11 - 192.168.1.105</div>
+                                </div>
+                                <span class="status-badge active">Online</span>
+                            </div>
+                            <div class="device-item">
+                                <div class="device-icon"><i class="fas fa-server"></i></div>
+                                <div class="device-info">
+                                    <div class="device-name">Server-Main</div>
+                                    <div class="device-os">Windows Server 2022 - 192.168.1.10</div>
+                                </div>
+                                <span class="status-badge active">Online</span>
+                            </div>
+                            <div class="device-item">
+                                <div class="device-icon"><i class="fas fa-mobile-alt"></i></div>
+                                <div class="device-info">
+                                    <div class="device-name">iPhone-15</div>
+                                    <div class="device-os">iOS 17.2 - Mobile</div>
+                                </div>
+                                <span class="status-badge pending">Syncing</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Users Table -->
+                    <div class="card data-table" id="usersTable">
+                        <div class="table-header">
+                            <h3><i class="fas fa-users"></i> User Management</h3>
+                            <div style="display: flex; gap: 12px;">
+                                <input type="text" class="search-input" placeholder="Search users..." id="userSearch">
+                                <button class="btn btn-primary"><i class="fas fa-plus"></i> Add User</button>
+                            </div>
+                        </div>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Plan</th>
+                                    <th>Devices</th>
+                                    <th>Status</th>
+                                    <th>Joined</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                <tr>
+                                    <td>#48291</td>
+                                    <td>John Smith</td>
+                                    <td>john@example.com</td>
+                                    <td>Pro</td>
+                                    <td>3</td>
+                                    <td><span class="status-badge active">Active</span></td>
+                                    <td>Jan 15, 2024</td>
+                                    <td>
+                                        <button class="action-btn"><i class="fas fa-edit"></i></button>
+                                        <button class="action-btn danger"><i class="fas fa-ban"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>#48290</td>
+                                    <td>Sarah Johnson</td>
+                                    <td>sarah@example.com</td>
+                                    <td>Premium</td>
+                                    <td>5</td>
+                                    <td><span class="status-badge active">Active</span></td>
+                                    <td>Jan 14, 2024</td>
+                                    <td>
+                                        <button class="action-btn"><i class="fas fa-edit"></i></button>
+                                        <button class="action-btn danger"><i class="fas fa-ban"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>#48289</td>
+                                    <td>Mike Davis</td>
+                                    <td>mike@example.com</td>
+                                    <td>Free</td>
+                                    <td>1</td>
+                                    <td><span class="status-badge pending">Pending</span></td>
+                                    <td>Jan 14, 2024</td>
+                                    <td>
+                                        <button class="action-btn"><i class="fas fa-edit"></i></button>
+                                        <button class="action-btn danger"><i class="fas fa-ban"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>#48288</td>
+                                    <td>Emily Brown</td>
+                                    <td>emily@example.com</td>
+                                    <td>Pro</td>
+                                    <td>2</td>
+                                    <td><span class="status-badge active">Active</span></td>
+                                    <td>Jan 13, 2024</td>
+                                    <td>
+                                        <button class="action-btn"><i class="fas fa-edit"></i></button>
+                                        <button class="action-btn danger"><i class="fas fa-ban"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>#48287</td>
+                                    <td>Robert Wilson</td>
+                                    <td>robert@example.com</td>
+                                    <td>Free</td>
+                                    <td>1</td>
+                                    <td><span class="status-badge inactive">Inactive</span></td>
+                                    <td>Jan 12, 2024</td>
+                                    <td>
+                                        <button class="action-btn"><i class="fas fa-edit"></i></button>
+                                        <button class="action-btn danger"><i class="fas fa-ban"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script>
+        // API Configuration
+        const API_BASE = 'http://localhost:8000/api';
+        
+        // Fetch real data from API
+        async function fetchAdminData() {
+            try {
+                const token = localStorage.getItem('token');
+                
+                // Fetch users
+                const usersRes = await fetch(`${API_BASE}/users`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (usersRes.ok) {
+                    const users = await usersRes.json();
+                    document.getElementById('totalUsers').textContent = users.length.toLocaleString();
+                }
+                
+                // Fetch devices
+                const devicesRes = await fetch(`${API_BASE}/devices`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (devicesRes.ok) {
+                    const devices = await devicesRes.json();
+                    document.getElementById('activeDevices').textContent = devices.length.toLocaleString();
+                }
+                
+                // Fetch threats
+                const threatsRes = await fetch(`${API_BASE}/threats`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (threatsRes.ok) {
+                    const threats = await threatsRes.json();
+                    document.getElementById('threatsBlocked').textContent = threats.length.toLocaleString();
+                }
+            } catch (error) {
+                console.log('Using demo data');
+            }
+        }
+        
+        // Update attack chart with real data
+        async function updateAttackTrends() {
+            try {
+                const token = localStorage.getItem('token');
+                const res = await fetch(`${API_BASE}/threats/stats/trends`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (res.ok) {
+                    const data = await res.json();
+                    const chart = document.getElementById('attackChart');
+                    chart.innerHTML = '';
+                    data.forEach(item => {
+                        const bar = document.createElement('div');
+                        bar.className = 'chart-bar';
+                        bar.style.height = item.percentage + '%';
+                        bar.setAttribute('data-label', item.day);
+                        chart.appendChild(bar);
+                    });
+                }
+            } catch (error) {
+                console.log('Using demo chart data');
+            }
+        }
+        
+        // WebSocket for real-time updates
+        let ws = null;
+        function connectWebSocket() {
+            try {
+                ws = new WebSocket('ws://localhost:8000/ws/admin');
+                
+                ws.onmessage = (event) => {
+                    const data = JSON.parse(event.data);
+                    
+                    if (data.type === 'threat_detected') {
+                        updateThreatCount();
+                        addThreatNotification(data.data);
+                    } else if (data.type === 'device_status') {
+                        updateDeviceStatus(data.data);
+                    }
+                };
+                
+                ws.onclose = () => {
+                    setTimeout(connectWebSocket, 5000);
+                };
+            } catch (error) {
+                console.log('WebSocket not available');
+            }
+        }
+        
+        function updateThreatCount() {
+            const el = document.getElementById('threatsBlocked');
+            const current = parseInt(el.textContent.replace(/,/g, ''));
+            el.textContent = (current + 1).toLocaleString();
+        }
+        
+        function addThreatNotification(threat) {
+            // Add toast notification
+            console.log('New threat detected:', threat);
+        }
+        
+        function updateDeviceStatus(device) {
+            const list = document.getElementById('deviceList');
+            const items = list.querySelectorAll('.device-item');
+            items.forEach(item => {
+                if (item.querySelector('.device-name').textContent === device.name) {
+                    const badge = item.querySelector('.status-badge');
+                    badge.className = 'status-badge ' + device.status;
+                    badge.textContent = device.status;
+                }
+            });
+        }
+        
+        // Tab switching
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (tab === 'users') {
+                // Show users section
+            } else if (tab === 'devices') {
+                // Show devices section
+            }
+        }
+        
+        // Search functionality
+        document.getElementById('userSearch').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#usersTableBody tr');
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(query) ? '' : 'none';
+            });
+        });
+        
+        // Initialize
+        fetchAdminData();
+        updateAttackTrends();
+        connectWebSocket();
+        
+        // Refresh data every 30 seconds
+        setInterval(fetchAdminData, 30000);
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Protection - SecureGuard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg-primary: #090c14;
+            --bg-card: #1a2332;
+            --border-color: #2a3545;
+            --accent-primary: #00d4aa;
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --accent-yellow: #f59e0b;
+            --accent-red: #ef4444;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; }
+        
+        .header { background: rgba(15, 19, 28, 0.9); padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border-color); }
+        .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .logo-icon { width: 40px; height: 40px; background: linear-gradient(135deg, var(--accent-primary), #00a88a); border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+        .logo-text { font-size: 1.3rem; font-weight: 700; color: white; }
+        .logo-text span { color: var(--accent-primary); }
+        .nav-links { display: flex; gap: 32px; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; font-weight: 500; }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent-primary); }
+        
+        .main { max-width: 1100px; margin: 0 auto; padding: 40px 32px; }
+        
+        .page-header { text-align: center; margin-bottom: 40px; }
+        .page-title { font-size: 2rem; font-weight: 700; margin-bottom: 8px; }
+        .page-subtitle { color: var(--text-secondary); }
+        
+        .current-mode { background: linear-gradient(145deg, var(--bg-card), rgba(26, 35, 50, 0.8)); border: 1px solid var(--border-color); border-radius: 20px; padding: 32px; text-align: center; margin-bottom: 40px; }
+        .mode-badge { display: inline-flex; align-items: center; gap: 10px; padding: 10px 20px; background: rgba(0, 212, 170, 0.15); border: 1px solid var(--accent-primary); border-radius: 30px; margin-bottom: 20px; }
+        .mode-icon { font-size: 24px; }
+        .mode-name { font-size: 1.2rem; font-weight: 600; }
+        .current-context { color: var(--text-secondary); }
+        
+        .modes-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 40px; }
+        .mode-card { background: var(--bg-card); border: 2px solid var(--border-color); border-radius: 16px; padding: 24px; text-align: center; cursor: pointer; transition: all 0.2s; }
+        .mode-card:hover { border-color: var(--accent-primary); transform: translateY(-4px); }
+        .mode-card.active { border-color: var(--accent-primary); background: rgba(0, 212, 170, 0.1); }
+        .mode-card-icon { width: 60px; height: 60px; border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 28px; }
+        .mode-card-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; }
+        .mode-card-desc { font-size: 0.85rem; color: var(--text-secondary); }
+        
+        .gaming { background: rgba(139, 92, 246, 0.15); color: var(--accent-purple); }
+        .banking { background: rgba(0, 212, 170, 0.15); color: var(--accent-primary); }
+        .browsing { background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); }
+        .work { background: rgba(245, 158, 11, 0.15); color: var(--accent-yellow); }
+        .idle { background: rgba(100, 116, 139, 0.15); color: var(--text-secondary); }
+        .normal { background: rgba(139, 92, 246, 0.15); color: #8b5cf6; }
+        
+        .settings-panel { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 24px; }
+        .settings-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 20px; }
+        
+        .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--border-color); }
+        .setting-row:last-child { border-bottom: none; }
+        .setting-info h4 { font-weight: 600; margin-bottom: 4px; }
+        .setting-info p { font-size: 0.85rem; color: var(--text-secondary); }
+        
+        .toggle { width: 50px; height: 26px; background: var(--border-color); border-radius: 13px; position: relative; cursor: pointer; transition: background 0.2s; }
+        .toggle.active { background: var(--accent-primary); }
+        .toggle::after { content: ''; position: absolute; width: 22px; height: 22px; background: white; border-radius: 50%; top: 2px; left: 2px; transition: transform 0.2s; }
+        .toggle.active::after { transform: translateX(24px); }
+        
+        @media (max-width: 768px) {
+            .modes-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <a href="index.html" class="logo">
+            <div class="logo-icon"><i class="fas fa-shield-halved"></i></div>
+            <div class="logo-text">Secure<span>Guard</span></div>
+        </a>
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="features.html">Features</a>
+            <a href="pricing.html">Pricing</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="admin.html">Admin</a>
+            <a href="risk-score.html">Risk Score</a>
+            <a href="threat-radar.html">Threat Radar</a>
+            <a href="attack-prediction.html">Attack Prediction</a>
+            <a href="digital-identity.html">Digital Identity</a>
+            <a href="advanced-features.html">AI Features</a>
+            <a href="security-agent.html">AI Agent</a>
+            <a href="smart-protection.html" class="active">Smart Protection</a>
+        </nav>
+    </header>
+
+    <main class="main">
+        <div class="page-header">
+            <h1 class="page-title">Smart Protection Mode</h1>
+            <p class="page-subtitle">Context-aware security that adapts to what you're doing</p>
+        </div>
+        
+        <div class="current-mode">
+            <div class="mode-badge" id="currentModeBadge">
+                <i class="fas fa-shield-alt mode-icon"></i>
+                <span class="mode-name" id="currentModeName">Normal Mode</span>
+            </div>
+            <p class="current-context" id="currentContext">Auto-detecting your activity...</p>
+        </div>
+        
+        <div class="modes-grid">
+            <div class="mode-card active" data-mode="normal" onclick="setMode('normal')">
+                <div class="mode-card-icon normal"><i class="fas fa-shield-alt"></i></div>
+                <div class="mode-card-title">Normal</div>
+                <div class="mode-card-desc">Balanced protection for everyday use</div>
+            </div>
+            
+            <div class="mode-card" data-mode="gaming" onclick="setMode('gaming')">
+                <div class="mode-card-icon gaming"><i class="fas fa-gamepad"></i></div>
+                <div class="mode-card-title">Gaming</div>
+                <div class="mode-card-desc">Silent mode with no interruptions</div>
+            </div>
+            
+            <div class="mode-card" data-mode="banking" onclick="setMode('banking')">
+                <div class="mode-card-icon banking"><i class="fas fa-university"></i></div>
+                <div class="mode-card-title">Banking</div>
+                <div class="mode-card-desc">Maximum security for financial transactions</div>
+            </div>
+            
+            <div class="mode-card" data-mode="browsing" onclick="setMode('browsing')">
+                <div class="mode-card-icon browsing"><i class="fas fa-globe"></i></div>
+                <div class="mode-card-title">Browsing</div>
+                <div class="mode-card-desc">Network protection while surfing</div>
+            </div>
+            
+            <div class="mode-card" data-mode="work" onclick="setMode('work')">
+                <div class="mode-card-icon work"><i class="fas fa-briefcase"></i></div>
+                <div class="mode-card-title">Work</div>
+                <div class="mode-card-desc">Optimized for productivity</div>
+            </div>
+            
+            <div class="mode-card" data-mode="idle" onclick="setMode('idle')">
+                <div class="mode-card-icon idle"><i class="fas fa-moon"></i></div>
+                <div class="mode-card-title">Idle</div>
+                <div class="mode-card-desc">Deep scan when you're away</div>
+            </div>
+        </div>
+        
+        <div class="settings-panel">
+            <div class="settings-title"><i class="fas fa-cog"></i> Auto-Detection Settings</div>
+            
+            <div class="setting-row">
+                <div class="setting-info">
+                    <h4>Enable Auto-Detection</h4>
+                    <p>Automatically detect your activity and switch protection modes</p>
+                </div>
+                <div class="toggle active" id="autoToggle" onclick="toggleAuto()"></div>
+            </div>
+            
+            <div class="setting-row">
+                <div class="setting-info">
+                    <h4>Process Monitoring</h4>
+                    <p>Detect gaming and banking apps to auto-switch modes</p>
+                </div>
+                <div class="toggle active" onclick="this.classList.toggle('active')"></div>
+            </div>
+            
+            <div class="setting-row">
+                <div class="setting-info">
+                    <h4>Window Title Monitoring</h4>
+                    <p>Detect activity from window titles</p>
+                </div>
+                <div class="toggle active" onclick="this.classList.toggle('active')"></div>
+            </div>
+            
+            <div class="setting-row">
+                <div class="setting-info">
+                    <h4>Time-Based Detection</h4>
+                    <p>Learn your schedule for automatic mode switching</p>
+                </div>
+                <div class="toggle" onclick="this.classList.toggle('active')"></div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/api.js"></script>
+    <script>
+        let currentMode = 'normal';
+        
+        function setMode(mode) {
+            currentMode = mode;
+            
+            // Update UI
+            document.querySelectorAll('.mode-card').forEach(card => {
+                card.classList.remove('active');
+                if (card.dataset.mode === mode) card.classList.add('active');
+            });
+            
+            // Update badge
+            const badges = {
+                normal: { icon: 'fa-shield-alt', name: 'Normal Mode', class: 'normal' },
+                gaming: { icon: 'fa-gamepad', name: 'Gaming Mode', class: 'gaming' },
+                banking: { icon: 'fa-university', name: 'Banking Mode', class: 'banking' },
+                browsing: { icon: 'fa-globe', name: 'Browsing Mode', class: 'browsing' },
+                work: { icon: 'fa-briefcase', name: 'Work Mode', class: 'work' },
+                idle: { icon: 'fa-moon', name: 'Idle Mode', class: 'idle' }
+            };
+            
+            const badge = badges[mode];
+            const badgeEl = document.getElementById('currentModeBadge');
+            badgeEl.className = 'mode-badge ' + badge.class;
+            badgeEl.querySelector('.mode-icon').className = 'fas ' + badge.icon + ' mode-icon';
+            document.getElementById('currentModeName').textContent = badge.name;
+            
+            // Update context
+            const contexts = {
+                normal: 'Standard protection for all activities',
+                gaming: 'Silent mode - no popups, minimal CPU usage',
+                banking: 'Maximum security - keylogger protection enabled',
+                browsing: 'Network protection active',
+                work: 'Optimized for productivity',
+                idle: 'Deep scanning enabled'
+            };
+            document.getElementById('currentContext').textContent = contexts[mode];
+            
+            // Save to API
+            try {
+                secureGuardAPI.setProtectionMode(mode);
+            } catch(e) {}
+        }
+        
+        function toggleAuto() {
+            document.getElementById('autoToggle').classList.toggle('active');
+        }
+        
+        // Load current mode
+        async function loadCurrentMode() {
+            try {
+                const data = await secureGuardAPI.getProtectionMode();
+                if (data && data.mode) {
+                    setMode(data.mode);
+                }
+            } catch(e) {}
+        }
+        
+        loadCurrentMode();
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Health - SecureGuard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0ea5e9;
+            --primary-dark: #0284c7;
+            --secondary: #10b981;
+            --secondary-dark: #059669;
+            --accent: #8b5cf6;
+            --dark: #0f172a;
+            --dark-2: #1e293b;
+            --dark-3: #334155;
+            --dark-card: #162033;
+            --dark-card-hover: #1e2d42;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border-subtle: rgba(255,255,255,0.05);
+            --border-light: rgba(255,255,255,0.1);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --shadow-glow: 0 0 30px rgba(14, 165, 233, 0.2);
+            --shadow-lg: 0 10px 40px rgba(0,0,0,0.5);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+        .bg-gradient {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: -1;
+            background: 
+                radial-gradient(ellipse 100% 80% at 20% 0%, rgba(14, 165, 233, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse 80% 60% at 80% 100%, rgba(16, 185, 129, 0.06) 0%, transparent 50%);
+        }
+        .app-container { display: flex; min-height: 100vh; }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 270px;
+            background: rgba(15, 23, 42, 0.95);
+            border-right: 1px solid var(--border-subtle);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
+        }
+        .sidebar-header { padding: 24px; border-bottom: 1px solid var(--border-subtle); }
+        .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .logo-icon {
+            width: 44px; height: 44px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: var(--radius-md);
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+        }
+        .logo-icon i { font-size: 22px; color: white; }
+        .logo-text { font-size: 1.4rem; font-weight: 700; color: var(--text-primary); }
+        .logo-text span {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .sidebar-nav { flex: 1; padding: 16px; overflow-y: auto; }
+        .nav-section { margin-bottom: 24px; }
+        .nav-section-title {
+            font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 1px; color: var(--text-muted); padding: 8px 16px; margin-bottom: 4px;
+        }
+        .nav-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 16px; border-radius: var(--radius-md);
+            color: var(--text-secondary); text-decoration: none;
+            font-weight: 500; font-size: 0.9rem;
+            transition: all 0.15s ease; margin-bottom: 4px;
+            cursor: pointer; border: none; background: transparent;
+            width: 100%; text-align: left; position: relative;
+        }
+        .nav-item::before {
+            content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+            width: 3px; background: linear-gradient(180deg, var(--primary), var(--secondary));
+            transform: scaleY(0); transition: transform 0.15s ease;
+        }
+        .nav-item:hover {
+            background: rgba(255,255,255,0.03); color: var(--text-primary);
+            transform: translateX(4px);
+        }
+        .nav-item.active {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.15), rgba(16, 185, 129, 0.1));
+            color: var(--primary); border: 1px solid rgba(14, 165, 233, 0.2);
+        }
+        .nav-item.active::before { transform: scaleY(1); }
+        .nav-item i { font-size: 18px; width: 24px; text-align: center; }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1; margin-left: 270px;
+            display: flex; flex-direction: column; min-height: 100vh;
+        }
+        .top-header {
+            background: rgba(15, 23, 42, 0.8);
+            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 16px 32px;
+            display: flex; align-items: center; justify-content: space-between;
+            position: sticky; top: 0; z-index: 50;
+        }
+        .page-title { font-size: 1.3rem; font-weight: 600; display: flex; align-items: center; gap: 12px; }
+        .page-title i {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .header-right { display: flex; align-items: center; gap: 16px; }
+        .header-btn {
+            width: 42px; height: 42px; border-radius: var(--radius-md);
+            background: var(--dark-card); border: 1px solid var(--border-subtle);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.15s ease; position: relative; color: var(--text-secondary);
+        }
+        .header-btn:hover {
+            background: var(--dark-card-hover); color: var(--primary);
+            border-color: var(--primary); transform: translateY(-2px);
+        }
+        .user-menu {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, var(--dark-card), rgba(22, 32, 51, 0.8));
+            border-radius: var(--radius-md); display: flex; align-items: center; gap: 10px;
+            border: 1px solid var(--border-subtle); cursor: pointer;
+        }
+        .user-avatar {
+            width: 32px; height: 32px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center;
+            font-weight: 600; font-size: 0.85rem;
+        }
+        .user-info { display: flex; flex-direction: column; }
+        .user-name { font-weight: 600; font-size: 0.85rem; }
+        .user-status { font-size: 0.7rem; color: var(--secondary); display: flex; align-items: center; gap: 4px; }
+        .user-status::before {
+            content: ''; width: 6px; height: 6px; background: var(--secondary);
+            border-radius: 50%; animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+        
+        /* Dashboard Content */
+        .dashboard-content { padding: 32px; flex: 1; }
+        .dashboard-grid {
+            display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px;
+        }
+        .card {
+            background: linear-gradient(145deg, rgba(22, 32, 51, 0.9), rgba(15, 23, 42, 0.8));
+            border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 24px;
+            transition: all 0.25s ease; position: relative; overflow: hidden;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
+        .card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+        }
+        .card:hover {
+            border-color: rgba(14, 165, 233, 0.3);
+            transform: translateY(-4px); box-shadow: var(--shadow-lg), var(--shadow-glow);
+        }
+        
+        /* Health Score */
+        .health-score-card { grid-column: span 4; text-align: center; }
+        .score-ring {
+            width: 160px; height: 160px; margin: 20px auto;
+            border-radius: 50%; position: relative;
+            display: flex; align-items: center; justify-content: center;
+            background: var(--dark-card);
+        }
+        .score-ring::before {
+            content: ''; position: absolute; inset: 0;
+            border-radius: 50%; padding: 8px;
+            background: conic-gradient(var(--secondary) var(--score, 92%), var(--dark-3) var(--score, 92%));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+        }
+        .score-ring::after {
+            content: ''; position: absolute; inset: 12px;
+            border-radius: 50%; background: linear-gradient(145deg, var(--dark-card), var(--dark));
+        }
+        .score-value {
+            font-size: 3rem; font-weight: 800;
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative; z-index: 1;
+        }
+        .score-label { font-size: 1rem; color: var(--text-secondary); margin-top: 8px; }
+        
+        /* CPU Card */
+        .cpu-card { grid-column: span 4; }
+        .gauge-container {
+            display: flex; flex-direction: column; align-items: center;
+            margin-top: 16px;
+        }
+        .gauge {
+            width: 120px; height: 60px; position: relative;
+            overflow: hidden;
+        }
+        .gauge-bg {
+            width: 120px; height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(var(--primary) 0deg 216deg, var(--dark-3) 216deg 360deg);
+        }
+        .gauge-center {
+            position: absolute; top: 20px; left: 20px;
+            width: 80px; height: 80px;
+            background: var(--dark-card); border-radius: 50%;
+        }
+        .gauge-value {
+            font-size: 1.5rem; font-weight: 700; margin-top: 8px;
+        }
+        .gauge-label { font-size: 0.85rem; color: var(--text-secondary); }
+        
+        /* RAM Card */
+        .ram-card { grid-column: span 4; }
+        
+        /* Disk Card */
+        .disk-card { grid-column: span 6; }
+        .disk-list { margin-top: 16px; }
+        .disk-item {
+            padding: 12px 0; border-bottom: 1px solid var(--border-subtle);
+        }
+        .disk-item:last-child { border-bottom: none; }
+        .disk-header {
+            display: flex; justify-content: space-between; margin-bottom: 8px;
+        }
+        .disk-name { font-weight: 600; }
+        .disk-usage { font-size: 0.85rem; color: var(--text-secondary); }
+        .disk-bar {
+            height: 8px; background: var(--dark-3);
+            border-radius: 4px; overflow: hidden;
+        }
+        .disk-fill {
+            height: 100%; border-radius: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+        .disk-fill.warning { background: linear-gradient(90deg, var(--warning), var(--danger)); }
+        
+        /* Process Card */
+        .process-card { grid-column: span 6; }
+        .process-list { max-height: 350px; overflow-y: auto; margin-top: 16px; }
+        .process-list::-webkit-scrollbar { width: 6px; }
+        .process-list::-webkit-scrollbar-track { background: var(--dark-3); }
+        .process-list::-webkit-scrollbar-thumb { background: var(--dark-card); border-radius: 3px; }
+        .process-item {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 10px 12px; background: var(--dark-card);
+            border-radius: var(--radius-md); margin-bottom: 6px;
+        }
+        .process-name { font-weight: 600; font-size: 0.85rem; }
+        .process-usage { color: var(--primary); font-weight: 600; }
+        
+        /* Temperature Card */
+        .temp-card { grid-column: span 4; }
+        .temp-item {
+            display: flex; justify-content: space-between;
+            padding: 12px 0; border-bottom: 1px solid var(--border-subtle);
+        }
+        .temp-item:last-child { border-bottom: none; }
+        .temp-label { color: var(--text-secondary); }
+        .temp-value { font-weight: 600; }
+        .temp-value.normal { color: var(--secondary); }
+        .temp-value.warning { color: var(--warning); }
+        .temp-value.critical { color: var(--danger); }
+        
+        /* Services Card */
+        .services-card { grid-column: span 8; }
+        .service-list { margin-top: 16px; }
+        .service-item {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 12px; background: var(--dark-card);
+            border-radius: var(--radius-md); margin-bottom: 8px;
+        }
+        .service-info { display: flex; align-items: center; gap: 12px; }
+        .service-icon {
+            width: 36px; height: 36px; border-radius: var(--radius-sm);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .service-icon.running {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(14, 165, 233, 0.1));
+        }
+        .service-icon.stopped {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(245, 158, 11, 0.1));
+        }
+        .service-icon i { font-size: 16px; }
+        .service-icon.running i { color: var(--secondary); }
+        .service-icon.stopped i { color: var(--danger); }
+        .service-name { font-weight: 600; font-size: 0.9rem; }
+        .service-status {
+            padding: 4px 12px; border-radius: 20px;
+            font-size: 0.75rem; font-weight: 600;
+        }
+        .service-status.running {
+            background: rgba(16, 185, 129, 0.2); color: var(--secondary);
+        }
+        .service-status.stopped {
+            background: rgba(239, 68, 68, 0.2); color: var(--danger);
+        }
+        
+        /* Uptime Card */
+        .uptime-card { grid-column: span 4; }
+        .uptime-stats { margin-top: 16px; }
+        .uptime-item {
+            text-align: center; padding: 16px;
+            background: var(--dark-card); border-radius: var(--radius-md);
+            margin-bottom: 8px;
+        }
+        .uptime-value { font-size: 1.8rem; font-weight: 700; color: var(--primary); }
+        .uptime-label { font-size: 0.8rem; color: var(--text-muted); }
+        
+        /* Live Indicator */
+        .live-indicator {
+            display: flex; align-items: center; gap: 8px;
+            padding: 6px 12px; background: rgba(16, 185, 129, 0.1);
+            border-radius: 20px;
+        }
+        .live-dot {
+            width: 8px; height: 8px; background: var(--secondary);
+            border-radius: 50%; animation: livePulse 1.5s infinite;
+        }
+        @keyframes livePulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        .live-indicator span { font-size: 0.8rem; color: var(--secondary); font-weight: 600; }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .health-score-card { grid-column: span 12; }
+            .cpu-card, .ram-card { grid-column: span 6; }
+            .disk-card { grid-column: span 12; }
+            .process-card { grid-column: span 12; }
+            .temp-card { grid-column: span 12; }
+            .services-card { grid-column: span 12; }
+            .uptime-card { grid-column: span 12; }
+        }
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .main-content { margin-left: 0; }
+            .dashboard-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-gradient"></div>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="dashboard.html" class="logo">
+                    <div class="logo-icon"><i class="fas fa-shield-alt"></i></div>
+                    <div class="logo-text">Secure<span>Guard</span></div>
+                </a>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Main</div>
+                    <a href="dashboard.html" class="nav-item"><i class="fas fa-th-large"></i>Dashboard</a>
+                    <a href="scan-center.html" class="nav-item"><i class="fas fa-search"></i>Scan Center</a>
+                    <a href="threat-intelligence.html" class="nav-item"><i class="fas fa-brain"></i>Threat Intel</a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Monitoring</div>
+                    <a href="network-monitor.html" class="nav-item"><i class="fas fa-network-wired"></i>Network</a>
+                    <a href="system-health.html" class="nav-item active"><i class="fas fa-heartbeat"></i>System Health</a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Account</div>
+                    <a href="profile.html" class="nav-item"><i class="fas fa-user"></i>Profile</a>
+                    <a href="settings.html" class="nav-item"><i class="fas fa-cog"></i>Settings</a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Admin</div>
+                    <a href="admin.html" class="nav-item"><i class="fas fa-user-shield"></i>Admin Panel</a>
+                </div>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <h1 class="page-title"><i class="fas fa-heartbeat"></i>System Health</h1>
+                <div class="header-right">
+                    <div class="live-indicator">
+                        <div class="live-dot"></div>
+                        <span>LIVE</span>
+                    </div>
+                    <button class="header-btn" title="Export"><i class="fas fa-download"></i></button>
+                    <button class="header-btn" title="Settings"><i class="fas fa-cog"></i></button>
+                    <div class="user-menu">
+                        <div class="user-avatar">JD</div>
+                        <div class="user-info">
+                            <div class="user-name">John Doe</div>
+                            <div class="user-status">Protected</div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <div class="dashboard-content">
+                <div class="dashboard-grid">
+                    <!-- Health Score -->
+                    <div class="card health-score-card">
+                        <h3><i class="fas fa-shield-heart"></i> System Health Score</h3>
+                        <div class="score-ring" style="--score: 92%;">
+                            <div class="score-value">92</div>
+                        </div>
+                        <div class="score-label">Excellent</div>
+                        <p style="margin-top: 16px; font-size: 0.85rem; color: var(--text-secondary);">
+                            Your system is well-protected with no critical issues detected.
+                        </p>
+                    </div>
+                    
+                    <!-- CPU -->
+                    <div class="card cpu-card">
+                        <h3><i class="fas fa-microchip"></i> CPU Usage</h3>
+                        <div class="gauge-container">
+                            <div class="gauge">
+                                <div class="gauge-bg"></div>
+                                <div class="gauge-center"></div>
+                            </div>
+                            <div class="gauge-value">42%</div>
+                            <div class="gauge-label">8 Cores @ 3.6 GHz</div>
+                        </div>
+                    </div>
+                    
+                    <!-- RAM -->
+                    <div class="card ram-card">
+                        <h3><i class="fas fa-memory"></i> Memory Usage</h3>
+                        <div class="gauge-container">
+                            <div class="gauge">
+                                <div class="gauge-bg"></div>
+                                <div class="gauge-center"></div>
+                            </div>
+                            <div class="gauge-value">68%</div>
+                            <div class="gauge-label">10.8 GB / 16 GB</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Disk -->
+                    <div class="card disk-card">
+                        <h3><i class="fas fa-hdd"></i> Disk Usage</h3>
+                        <div class="disk-list">
+                            <div class="disk-item">
+                                <div class="disk-header">
+                                    <span class="disk-name"><i class="fas fa-windows"></i> Windows (C:)</span>
+                                    <span class="disk-usage">245 GB / 500 GB</span>
+                                </div>
+                                <div class="disk-bar"><div class="disk-fill" style="width: 49%"></div></div>
+                            </div>
+                            <div class="disk-item">
+                                <div class="disk-header">
+                                    <span class="disk-name"><i class="fas fa-folder"></i> Data (D:)</span>
+                                    <span class="disk-usage">890 GB / 1 TB</span>
+                                </div>
+                                <div class="disk-bar"><div class="disk-fill warning" style="width: 89%"></div></div>
+                            </div>
+                            <div class="disk-item">
+                                <div class="disk-header">
+                                    <span class="disk-name"><i class="fas fa-cloud"></i> Cloud (E:)</span>
+                                    <span class="disk-usage">25 GB / 100 GB</span>
+                                </div>
+                                <div class="disk-bar"><div class="disk-fill" style="width: 25%"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Temperature -->
+                    <div class="card temp-card">
+                        <h3><i class="fas fa-thermometer-half"></i> Temperature</h3>
+                        <div class="temp-item">
+                            <span class="temp-label">CPU</span>
+                            <span class="temp-value normal">52°C</span>
+                        </div>
+                        <div class="temp-item">
+                            <span class="temp-label">GPU</span>
+                            <span class="temp-value normal">48°C</span>
+                        </div>
+                        <div class="temp-item">
+                            <span class="temp-label">Motherboard</span>
+                            <span class="temp-value normal">38°C</span>
+                        </div>
+                        <div class="temp-item">
+                            <span class="temp-label">HDD</span>
+                            <span class="temp-value normal">35°C</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Top Processes -->
+                    <div class="card process-card">
+                        <h3><i class="fas fa-tasks"></i> Top Processes</h3>
+                        <div class="process-list">
+                            <div class="process-item">
+                                <span class="process-name">chrome.exe</span>
+                                <span class="process-usage">12.4%</span>
+                            </div>
+                            <div class="process-item">
+                                <span class="process-name">SecureGuard.exe</span>
+                                <span class="process-usage">8.2%</span>
+                            </div>
+                            <div class="process-item">
+                                <span class="process-name">code.exe</span>
+                                <span class="process-usage">6.1%</span>
+                            </div>
+                            <div class="process-item">
+                                <span class="process-name">svchost.exe</span>
+                                <span class="process-usage">4.8%</span>
+                            </div>
+                            <div class="process-item">
+                                <span class="process-name">explorer.exe</span>
+                                <span class="process-usage">3.2%</span>
+                            </div>
+                            <div class="process-item">
+                                <span class="process-name">OneDrive.exe</span>
+                                <span class="process-usage">2.1%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Services -->
+                    <div class="card services-card">
+                        <h3><i class="fas fa-cogs"></i> Security Services</h3>
+                        <div class="service-list">
+                            <div class="service-item">
+                                <div class="service-info">
+                                    <div class="service-icon running"><i class="fas fa-check"></i></div>
+                                    <div class="service-name">Real-Time Protection</div>
+                                </div>
+                                <span class="service-status running">Running</span>
+                            </div>
+                            <div class="service-item">
+                                <div class="service-info">
+                                    <div class="service-icon running"><i class="fas fa-check"></i></div>
+                                    <div class="service-name">Firewall Manager</div>
+                                </div>
+                                <span class="service-status running">Running</span>
+                            </div>
+                            <div class="service-item">
+                                <div class="service-info">
+                                    <div class="service-icon running"><i class="fas fa-check"></i></div>
+                                    <div class="service-name">Auto-Update Service</div>
+                                </div>
+                                <span class="service-status running">Running</span>
+                            </div>
+                            <div class="service-item">
+                                <div class="service-info">
+                                    <div class="service-icon running"><i class="fas fa-check"></i></div>
+                                    <div class="service-name">ML Engine</div>
+                                </div>
+                                <span class="service-status running">Running</span>
+                            </div>
+                            <div class="service-item">
+                                <div class="service-info">
+                                    <div class="service-icon stopped"><i class="fas fa-times"></i></div>
+                                    <div class="service-name">VPN Service</div>
+                                </div>
+                                <span class="service-status stopped">Stopped</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Uptime -->
+                    <div class="card uptime-card">
+                        <h3><i class="fas fa-clock"></i> System Uptime</h3>
+                        <div class="uptime-stats">
+                            <div class="uptime-item">
+                                <div class="uptime-value">4</div>
+                                <div class="uptime-label">Days</div>
+                            </div>
+                            <div class="uptime-item">
+                                <div class="uptime-value">12</div>
+                                <div class="uptime-label">Hours</div>
+                            </div>
+                            <div class="uptime-item">
+                                <div class="uptime-value">34</div>
+                                <div class="uptime-label">Minutes</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- System Health Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/loader.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // ========================================
+        // System Health - Real-Time Data Integration
+        // ========================================
+
+        // Load real system data
+        async function loadSystemHealthData() {
+            try {
+                // Check connection
+                const isConnected = await secureGuardAPI.checkConnection();
+                updateConnectionStatus(isConnected);
+                
+                if (isConnected) {
+                    // Fetch system performance (CPU, RAM)
+                    const perfData = await secureGuardAPI.getSystemPerformance();
+                    if (perfData && !perfData.error) {
+                        updatePerformanceData(perfData);
+                    }
+                    
+                    // Fetch system info
+                    const sysInfo = await secureGuardAPI.getSystemInfo();
+                    if (sysInfo && !sysInfo.error) {
+                        updateSystemInfo(sysInfo);
+                    }
+                    
+                    // Fetch processes
+                    const procData = await secureGuardAPI.getProcesses();
+                    if (procData && procData.processes) {
+                        updateProcessList(procData.processes);
+                    }
+                    
+                    // Fetch storage
+                    const storageData = await secureGuardAPI.getStorageInfo();
+                    if (storageData && storageData.drives) {
+                        updateStorageData(storageData.drives);
+                    }
+                    
+                    // Fetch services
+                    const servicesData = await secureGuardAPI.getServices();
+                    if (servicesData && servicesData.services) {
+                        updateServicesData(servicesData.services);
+                    }
+                } else {
+                    console.log('Backend not connected, using fallback data');
+                }
+            } catch (error) {
+                console.warn('Error loading system health data:', error);
+            }
+        }
+        
+        // Update connection status
+        function updateConnectionStatus(connected) {
+            const liveDot = document.querySelector('.live-dot');
+            const liveText = document.querySelector('.live-indicator span');
+            if (liveDot && liveText) {
+                if (connected) {
+                    liveDot.style.background = 'var(--secondary)';
+                    liveText.textContent = 'LIVE';
+                } else {
+                    liveDot.style.background = 'var(--warning)';
+                    liveText.textContent = 'OFFLINE';
+                }
+            }
+        }
+        
+        // Update performance (CPU/RAM) data
+        function updatePerformanceData(data) {
+            // Update CPU
+            const cpuValue = document.querySelector('.cpu-card .gauge-value');
+            if (cpuValue && data.cpu !== undefined) {
+                cpuValue.textContent = data.cpu + '%';
+                // Update gauge background
+                const gaugeBg = document.querySelector('.cpu-card .gauge-bg');
+                if (gaugeBg) {
+                    const degrees = (data.cpu / 100) * 216;
+                    gaugeBg.style.background = `conic-gradient(var(--primary) ${degrees}deg, var(--dark-3) ${degrees}deg)`;
+                }
+            }
+            
+            // Update RAM
+            const ramValue = document.querySelector('.ram-card .gauge-value');
+            if (ramValue && data.ram !== undefined) {
+                ramValue.textContent = data.ram + '%';
+                const gaugeBg = document.querySelector('.ram-card .gauge-bg');
+                if (gaugeBg) {
+                    const degrees = (data.ram / 100) * 216;
+                    gaugeBg.style.background = `conic-gradient(var(--secondary) ${degrees}deg, var(--dark-3) ${degrees}deg)`;
+                }
+            }
+            
+            // Update health score
+            const healthScore = Math.max(50, 100 - ((data.cpu || 0) + (data.ram || 0)) / 4);
+            const scoreValue = document.querySelector('.health-score-card .score-value');
+            const scoreRing = document.querySelector('.health-score-card .score-ring');
+            if (scoreValue) {
+                scoreValue.textContent = healthScore;
+            }
+            if (scoreRing) {
+                scoreRing.style.setProperty('--score', healthScore + '%');
+            }
+        }
+        
+        // Update system info
+        function updateSystemInfo(data) {
+            // Update uptime
+            const uptimeItems = document.querySelectorAll('.uptime-item');
+            if (uptimeItems.length >= 3 && data.uptime) {
+                const days = Math.floor(data.uptime / 24);
+                const hours = Math.floor(data.uptime % 24);
+                const mins = Math.floor((data.uptime * 60) % 60);
+                
+                uptimeItems[0].querySelector('.uptime-value').textContent = days;
+                uptimeItems[1].querySelector('.uptime-value').textContent = hours;
+                uptimeItems[2].querySelector('.uptime-value').textContent = mins;
+            }
+        }
+        
+        // Update process list
+        function updateProcessList(processes) {
+            const processList = document.querySelector('.process-list');
+            if (!processList || !processes || processes.length === 0) return;
+            
+            // Sort by memory and take top 6
+            const topProcesses = processes
+                .sort((a, b) => (b.memory || 0) - (a.memory || 0))
+                .slice(0, 6);
+            
+            processList.innerHTML = topProcesses.map(proc => {
+                const memMB = Math.round((proc.memory || 0) / (1024 * 1024));
+                return `
+                    <div class="process-item">
+                        <span class="process-name">${proc.name || 'Unknown'}</span>
+                        <span class="process-usage">${memMB} MB</span>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Update storage data
+        function updateStorageData(drives) {
+            const diskList = document.querySelector('.disk-list');
+            if (!diskList || !drives || drives.length === 0) return;
+            
+            diskList.innerHTML = drives.slice(0, 3).map(drive => {
+                const usedGB = Math.round((drive.usedSpace || drive.totalSize - drive.freeSpace) / (1024 * 1024 * 1024));
+                const totalGB = Math.round((drive.totalSize || 0) / (1024 * 1024 * 1024));
+                const percent = drive.usagePercent || 0;
+                const isWarning = percent > 80;
+                
+                return `
+                    <div class="disk-item">
+                        <div class="disk-header">
+                            <span class="disk-name"><i class="fas fa-hdd"></i> ${drive.label || drive.name || 'Local Disk'}</span>
+                            <span class="disk-usage">${usedGB} GB / ${totalGB} GB</span>
+                        </div>
+                        <div class="disk-bar">
+                            <div class="disk-fill ${isWarning ? 'warning' : ''}" style="width: ${percent}%"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Update services data
+        function updateServicesData(services) {
+            const serviceList = document.querySelector('.service-list');
+            if (!serviceList || !services || services.length === 0) return;
+            
+            serviceList.innerHTML = services.slice(0, 5).map(service => {
+                const isRunning = service.status === 'Running' || service.status === 'Active' || service.healthy;
+                return `
+                    <div class="service-item">
+                        <div class="service-info">
+                            <div class="service-icon ${isRunning ? 'running' : 'stopped'}">
+                                <i class="fas fa-${isRunning ? 'check' : 'times'}"></i>
+                            </div>
+                            <div class="service-name">${service.name || 'Unknown Service'}</div>
+                        </div>
+                        <span class="service-status ${isRunning ? 'running' : 'stopped'}">${service.status || 'Unknown'}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('SecureGuard System Health Loading...');
+            
+            // Load initial data
+            loadSystemHealthData();
+            
+            // Start polling for real-time updates (every 5 seconds)
+            if (typeof secureGuardAPI !== 'undefined') {
+                secureGuardAPI.startPolling(async (data) => {
+                    if (data && data.system) {
+                        updatePerformanceData(data.system);
+                    }
+                }, 5000);
+            }
+        });
+    </script>
+</body>
+</html>
+
